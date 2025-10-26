@@ -1,9 +1,33 @@
 # Makefile Modules for Symfony Projects
 
-This repository contains re-usable make file commands that should work as aliased for a project maintancened
+This repository contains re-usable make file commands that should work as aliased for a project maintained
 by "Team Mate Pro" software company.
 
 All projects should follow internal conventions.
+
+## Installation
+
+Install via Composer:
+
+```bash
+composer require team-mate-pro/make
+```
+
+Then include the desired Makefile modules in your project's Makefile:
+
+```makefile
+# Define mandatory variables
+docker-compose=docker compose
+main-container-name=app
+
+# Include desired modules from vendor
+include vendor/team-mate-pro/make/git/MAKE_GIT_v1
+include vendor/team-mate-pro/make/docker/MAKE_DOCKER_v1
+include vendor/team-mate-pro/make/sf-7/MAKE_SYMFONY_v1
+include vendor/team-mate-pro/make/phpcs/MAKE_PHPCS_v1
+include vendor/team-mate-pro/make/phpunit/MAKE_PHPUNIT_v1
+include vendor/team-mate-pro/make/phpstan/MAKE_PHPSTAN_v1
+```
 
 ## Conventions
 

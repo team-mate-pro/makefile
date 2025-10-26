@@ -1,0 +1,29 @@
+{
+    "name": "team-mate-pro/make",
+    "description": "Modular Makefile snippets for Symfony projects with Docker Compose integration. Provides standardized development workflows for Team Mate Pro projects.",
+    "type": "library",
+    "keywords": [
+        "makefile",
+        "symfony",
+        "docker",
+        "docker-compose",
+        "development",
+        "workflow",
+        "phpstan",
+        "phpcs",
+        "phpunit",
+        "git",
+        "devops"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Twaróg",
+            "email": "sebastian.twarog1989@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "minimum-stability": "stable"
+}

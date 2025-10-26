@@ -17,24 +17,24 @@ help: ### Display available targets and their descriptions
 ## --- General ---
 
 # General git commands
-include git/MAKE_GIT_v1
+include ./../../git/MAKE_GIT_v1
 
 # Docker
-include docker/MAKE_DOCKER_v1
+include ./../../docker/MAKE_DOCKER_v1
 
 # --- Backend ---
 
 # Symfony +7
-include sf-7/MAKE_SYMFONY_v1
+include ./../../sf-7/MAKE_SYMFONY_v1
 
 # PHPCS
-include phpcs/MAKE_PHPCS_v1
+include ./../../phpcs/MAKE_PHPCS_v1
 
 # PHPUNIT
-include phpunit/MAKE_PHPUNIT_v1
+include ./../../phpunit/MAKE_PHPUNIT_v1
 
 # PHPSTAN
-include phpstan/MAKE_PHPSTAN_v1
+include ./../../phpstan/MAKE_PHPSTAN_v1
 
 ## --- Frontend ---
 

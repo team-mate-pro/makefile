@@ -1,0 +1,201 @@
+# Cache Management
+sf_cache_clear: ### Clear Symfony cache (dev and test) (alias: scc)
+	$(docker-compose) exec ${main-container-name} php bin/console cache:clear
+	$(docker-compose) exec ${main-container-name} php bin/console cache:clear --env=test
+
+sf_cache_warmup: ### Warm up Symfony cache (alias: scw)
+	$(docker-compose) exec ${main-container-name} php bin/console cache:warmup
+	$(docker-compose) exec ${main-container-name} php bin/console cache:warmup --env=test
+
+sf_cache_pool_clear: ### Clear specific cache pool (usage: make sf_cache_pool_clear POOL=doctrine.result_cache) (alias: scpc)
+	@if [ -z "$(POOL)" ]; then echo "Usage: make sf_cache_pool_clear POOL=doctrine.result_cache"; exit 1; fi
+	$(docker-compose) exec ${main-container-name} php bin/console cache:pool:clear $(POOL)
+
+# Database - Migrations
+sf_migrate: ### Run database migrations (dev and test) (alias: smig)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate --no-interaction
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+sf_migrate_dev: ### Run database migrations (dev only) (alias: smigd)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate --no-interaction
+
+sf_migrate_test: ### Run database migrations (test only) (alias: smigt)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+sf_migrate_status: ### Show migration status (alias: smigs)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:status
+
+sf_migrate_diff: ### Generate migration from schema changes (alias: smigdiff)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:diff --no-interaction
+
+sf_migrate_generate: ### Generate blank migration (alias: smiggen)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:generate --no-interaction
+
+sf_migrate_prev: ### Rollback to previous migration (alias: smigprev)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate prev --no-interaction
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate prev --env=test --no-interaction
+
+sf_migrate_first: ### Rollback to first migration (alias: smigfirst)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate first --no-interaction
+
+sf_migrate_latest: ### Execute all pending migrations (alias: smiglat)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate latest --no-interaction
+
+# Database - Operations
+sf_db_create: ### Create database (dev and test) (alias: sdbc)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:create
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:create --env=test
+
+sf_db_drop: ### Drop database (dev and test) (alias: sdbd)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:drop --force --if-exists
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:drop --force --if-exists --env=test
+
+sf_db_reload: ### Reload database (drop, create, migrate) (alias: sdbr)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:drop --force --if-exists --env=dev
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:create --env=dev
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate --no-interaction --env=dev
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:drop --force --if-exists --env=test
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:database:create --env=test
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+sf_db_validate: ### Validate doctrine mapping (alias: sdbv)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:schema:validate --skip-sync
+
+sf_schema_update: ### Update database schema (alias: ssu)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:schema:update --force --complete
+
+# Fixtures
+sf_fixtures_load: ### Load Doctrine fixtures (alias: sfix)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:fixtures:load --no-interaction
+
+sf_fixtures_load_custom: ### Load fixtures with custom purger (alias: sfixc)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:fixtures:load --purger=custom_purger --group=new --no-interaction
+
+sf_fixtures_load_test: ### Load fixtures for test environment (alias: sfixt)
+	$(docker-compose) exec ${main-container-name} php bin/console doctrine:fixtures:load --purger=custom_purger --group=new --no-interaction --env=test
+
+# Debug Commands
+sf_debug_router: ### Show all routes (alias: sdr)
+	$(docker-compose) exec ${main-container-name} php bin/console debug:router
+
+sf_debug_route: ### Show route details (usage: make sf_debug_route NAME=app_product_show) (alias: sdroute)
+	@if [ -z "$(NAME)" ]; then echo "Usage: make sf_debug_route NAME=app_product_show"; exit 1; fi
+	$(docker-compose) exec ${main-container-name} php bin/console debug:router $(NAME)
+
+sf_debug_container: ### Show services in container (alias: sdc)
+	$(docker-compose) exec ${main-container-name} php bin/console debug:container
+
+sf_debug_service: ### Show service details (usage: make sf_debug_service NAME=doctrine.orm.entity_manager) (alias: sds)
+	@if [ -z "$(NAME)" ]; then echo "Usage: make sf_debug_service NAME=doctrine.orm.entity_manager"; exit 1; fi
+	$(docker-compose) exec ${main-container-name} php bin/console debug:container $(NAME)
+
+sf_debug_config: ### Show configuration (usage: make sf_debug_config BUNDLE=framework) (alias: sdconf)
+	@if [ -z "$(BUNDLE)" ]; then \
+		$(docker-compose) exec ${main-container-name} php bin/console debug:config; \
+	else \
+		$(docker-compose) exec ${main-container-name} php bin/console debug:config $(BUNDLE); \
+	fi
+
+sf_debug_autowiring: ### Show autowirable services (alias: sdaw)
+	$(docker-compose) exec ${main-container-name} php bin/console debug:autowiring
+
+sf_debug_event_dispatcher: ### Show event listeners (alias: sded)
+	$(docker-compose) exec ${main-container-name} php bin/console debug:event-dispatcher
+
+sf_debug_translation: ### Show translation messages (usage: make sf_debug_translation LOCALE=pl) (alias: sdtrans)
+	@if [ -z "$(LOCALE)" ]; then \
+		$(docker-compose) exec ${main-container-name} php bin/console debug:translation; \
+	else \
+		$(docker-compose) exec ${main-container-name} php bin/console debug:translation $(LOCALE); \
+	fi
+
+sf_debug_twig: ### Show twig functions and filters (alias: sdtwig)
+	$(docker-compose) exec ${main-container-name} php bin/console debug:twig
+
+# Assets
+sf_assets_install: ### Install assets to public directory (alias: sai)
+	$(docker-compose) exec ${main-container-name} php bin/console assets:install --symlink public
+
+# Security
+sf_security_check: ### Check security vulnerabilities (alias: ssec)
+	$(docker-compose) exec ${main-container-name} php bin/console security:check
+
+sf_user_password_hash: ### Hash user password (usage: make sf_user_password_hash PASS=secret123) (alias: suph)
+	@if [ -z "$(PASS)" ]; then echo "Usage: make sf_user_password_hash PASS=secret123"; exit 1; fi
+	$(docker-compose) exec ${main-container-name} php bin/console security:hash-password $(PASS)
+
+# Translations
+sf_translation_extract: ### Extract translations (usage: make sf_translation_extract LOCALE=pl) (alias: strans)
+	@if [ -z "$(LOCALE)" ]; then echo "Usage: make sf_translation_extract LOCALE=pl"; exit 1; fi
+	$(docker-compose) exec ${main-container-name} php bin/console translation:extract $(LOCALE) --force --format=yaml
+
+sf_translation_update: ### Update translations for all locales (alias: stransu)
+	$(docker-compose) exec ${main-container-name} php bin/console translation:extract pl --force --format=yaml
+	$(docker-compose) exec ${main-container-name} php bin/console translation:extract en --force --format=yaml
+
+# Lint
+sf_lint_yaml: ### Lint YAML files (alias: sly)
+	$(docker-compose) exec ${main-container-name} php bin/console lint:yaml config
+
+sf_lint_twig: ### Lint Twig templates (alias: slt)
+	$(docker-compose) exec ${main-container-name} php bin/console lint:twig templates
+
+sf_lint_container: ### Lint service container (alias: slc)
+	$(docker-compose) exec ${main-container-name} php bin/console lint:container
+
+# Server & Development
+sf_server_dump: ### Run var-dumper server (alias: ssd)
+	$(docker-compose) exec ${main-container-name} php bin/console server:dump
+
+# Utilities
+sf_list: ### List all available Symfony commands (alias: slist)
+	$(docker-compose) exec ${main-container-name} php bin/console list
+
+sf_clear_logs: ### Clear log files (alias: scl)
+	$(docker-compose) exec ${main-container-name} rm -rf var/log/*.log
+
+sf_clear_cache_all: ### Clear all cache and temp files (alias: scca)
+	$(docker-compose) exec ${main-container-name} rm -rf var/cache/* var/log/*
+
+# Aliases
+scc: sf_cache_clear
+scw: sf_cache_warmup
+scpc: sf_cache_pool_clear
+smig: sf_migrate
+smigd: sf_migrate_dev
+smigt: sf_migrate_test
+smigs: sf_migrate_status
+smigdiff: sf_migrate_diff
+smiggen: sf_migrate_generate
+smigprev: sf_migrate_prev
+smigfirst: sf_migrate_first
+smiglat: sf_migrate_latest
+sdbc: sf_db_create
+sdbd: sf_db_drop
+sdbr: sf_db_reload
+sdbv: sf_db_validate
+ssu: sf_schema_update
+sfix: sf_fixtures_load
+sfixc: sf_fixtures_load_custom
+sfixt: sf_fixtures_load_test
+sdr: sf_debug_router
+sdroute: sf_debug_route
+sdc: sf_debug_container
+sds: sf_debug_service
+sdconf: sf_debug_config
+sdaw: sf_debug_autowiring
+sded: sf_debug_event_dispatcher
+sdtrans: sf_debug_translation
+sdtwig: sf_debug_twig
+sai: sf_assets_install
+ssec: sf_security_check
+suph: sf_user_password_hash
+strans: sf_translation_extract
+stransu: sf_translation_update
+sly: sf_lint_yaml
+slt: sf_lint_twig
+slc: sf_lint_container
+ssd: sf_server_dump
+slist: sf_list
+scl: sf_clear_logs
+scca: sf_clear_cache_all

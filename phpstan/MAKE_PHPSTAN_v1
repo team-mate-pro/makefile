@@ -1,0 +1,62 @@
+phpstan: ### Run PHPStan with cache warmup and configured settings (alias: ps)
+	$(docker-compose) exec app composer phpstan
+
+phpstan_baseline: ### Generate PHPStan baseline file (alias: psb)
+	$(docker-compose) exec app composer phpstan:baseline
+
+phpstan_analyze: ### Run PHPStan analysis only (no cache warmup) (alias: psa)
+	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G
+
+phpstan_clear: ### Clear PHPStan result cache (alias: psc)
+	$(docker-compose) exec app vendor/bin/phpstan clear-result-cache
+
+phpstan_file: ### Analyze specific file (usage: make phpstan_file FILE=src/Entity/User.php) (alias: psf)
+	@if [ -z "$(FILE)" ]; then echo "Usage: make phpstan_file FILE=src/Entity/User.php"; exit 1; fi
+	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(FILE)
+
+phpstan_dir: ### Analyze specific directory (usage: make phpstan_dir DIR=src/Service) (alias: psd)
+	@if [ -z "$(DIR)" ]; then echo "Usage: make phpstan_dir DIR=src/Service"; exit 1; fi
+	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(DIR)
+
+phpstan_paths: ### Analyze multiple paths (usage: make phpstan_paths PATHS="src/Entity src/Service") (alias: psp)
+	@if [ -z "$(PATHS)" ]; then echo "Usage: make phpstan_paths PATHS=\"src/Entity src/Service\""; exit 1; fi
+	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(PATHS)
+
+phpstan_memory_limit: ### Run with custom memory limit (usage: make phpstan_memory_limit MEMORY=2G) (alias: psm)
+	@if [ -z "$(MEMORY)" ]; then echo "Usage: make phpstan_memory_limit MEMORY=2G"; exit 1; fi
+	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit $(MEMORY)
+
+phpstan_debug: ### Run PHPStan with debug output (alias: psdbg)
+	$(docker-compose) exec app composer phpstan -- --debug
+
+phpstan_configuration: ### Use specific config file (usage: make phpstan_configuration CONFIG=phpstan-custom.neon) (alias: psconf)
+	@if [ -z "$(CONFIG)" ]; then echo "Usage: make phpstan_configuration CONFIG=phpstan-custom.neon"; exit 1; fi
+	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c $(CONFIG) --memory-limit 1G
+
+phpstan_ci: ### Run PHPStan for CI/CD (no progress, checkstyle format) (alias: psci)
+	$(docker-compose) exec app composer phpstan -- --no-progress --error-format=checkstyle
+
+phpstan_parallel: ### Run with parallel processing (usage: make phpstan_parallel PROCESSES=4) (alias: pspar)
+	@if [ -z "$(PROCESSES)" ]; then \
+		$(docker-compose) exec app composer phpstan; \
+	else \
+		$(docker-compose) exec app composer phpstan -- --parallel=$(PROCESSES); \
+	fi
+
+phpstan_list_files: ### List files that will be analyzed (alias: pslf)
+	$(docker-compose) exec app composer phpstan -- --list-files
+
+# Aliases
+ps: phpstan
+psb: phpstan_baseline
+psa: phpstan_analyze
+psc: phpstan_clear
+psf: phpstan_file
+psd: phpstan_dir
+psp: phpstan_paths
+psm: phpstan_memory_limit
+psdbg: phpstan_debug
+psconf: phpstan_configuration
+psci: phpstan_ci
+pspar: phpstan_parallel
+pslf: phpstan_list_files

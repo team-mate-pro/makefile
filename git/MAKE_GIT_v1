@@ -1,0 +1,259 @@
+git_status: ### Show working tree status (alias: gs)
+	git status
+
+git_log: ### Show recent commit history (last 10 commits) (alias: gl)
+	git log --oneline --graph --decorate -n 10
+
+git_log_all: ### Show detailed commit history with graph (alias: gla)
+	git log --oneline --graph --decorate --all -n 20
+
+git_diff: ### Show unstaged changes (alias: gd)
+	git diff
+
+git_diff_staged: ### Show staged changes (alias: gds)
+	git diff --cached
+
+git_diff_branch: ### Show differences between current branch and develop (alias: gdb)
+	git diff develop
+
+git_fetch: ### Fetch all branches from origin (alias: gf)
+	git fetch origin
+
+git_pull: ### Pull current branch from origin (alias: gpl)
+	git pull origin
+
+git_pull_develop: ### Pull develop branch from origin (alias: gpld)
+	git pull origin develop
+
+git_pull_master: ### Pull master branch from origin (alias: gplm)
+	git pull origin master
+
+git_branches: ### List all local branches (alias: gb)
+	git branch
+
+git_branches_all: ### List all branches (local and remote) (alias: gba)
+	git branch -a
+
+git_branches_remote: ### List all remote branches (alias: gbr)
+	git branch -r
+
+git_branch_current: ### Show current branch name (alias: gbc)
+	git branch --show-current
+
+git_branch_delete: ### Delete local branch (usage: make git_branch_delete BRANCH=branch-name) (alias: gbd)
+	@if [ -z "$(BRANCH)" ]; then echo "Usage: make git_branch_delete BRANCH=branch-name"; exit 1; fi
+	git branch -d $(BRANCH)
+
+git_branch_delete_force: ### Force delete local branch (usage: make git_branch_delete_force BRANCH=branch-name) (alias: gbdf)
+	@if [ -z "$(BRANCH)" ]; then echo "Usage: make git_branch_delete_force BRANCH=branch-name"; exit 1; fi
+	git branch -D $(BRANCH)
+
+git_checkout_develop: ### Checkout develop branch (alias: gcd)
+	git checkout develop
+
+git_checkout_master: ### Checkout master branch (alias: gcm)
+	git checkout master
+
+git_checkout: ### Checkout branch (usage: make git_checkout BRANCH=branch-name) (alias: gco)
+	@if [ -z "$(BRANCH)" ]; then echo "Usage: make git_checkout BRANCH=branch-name"; exit 1; fi
+	git checkout $(BRANCH)
+
+git_checkout_new: ### Create and checkout new branch (usage: make git_checkout_new BRANCH=branch-name) (alias: gcon)
+	@if [ -z "$(BRANCH)" ]; then echo "Usage: make git_checkout_new BRANCH=branch-name"; exit 1; fi
+	git checkout -b $(BRANCH)
+
+git_add_all: ### Stage all changes (alias: gaa)
+	git add .
+
+git_add: ### Stage specific files (usage: make git_add FILES="file1 file2") (alias: ga)
+	@if [ -z "$(FILES)" ]; then echo "Usage: make git_add FILES=\"file1 file2\""; exit 1; fi
+	git add $(FILES)
+
+git_commit: ### Commit staged changes (usage: make git_commit MSG="commit message") (alias: gc)
+	@if [ -z "$(MSG)" ]; then echo "Usage: make git_commit MSG=\"commit message\""; exit 1; fi
+	git commit -m "$(MSG)"
+
+git_commit_amend: ### Amend last commit (keeps same message) (alias: gca)
+	git commit --amend --no-edit
+
+git_commit_amend_msg: ### Amend last commit with new message (usage: make git_commit_amend_msg MSG="new message") (alias: gcam)
+	@if [ -z "$(MSG)" ]; then echo "Usage: make git_commit_amend_msg MSG=\"new message\""; exit 1; fi
+	git commit --amend -m "$(MSG)"
+
+git_push: ### Push current branch to origin (alias: gp)
+	git push origin HEAD
+
+git_push_force: ### Force push current branch with lease (alias: gpf)
+	git push origin HEAD --force-with-lease
+
+git_push_upstream: ### Push current branch and set upstream (alias: gpu)
+	git push -u origin HEAD
+
+git_stash: ### Stash current changes (alias: gst)
+	git stash save
+
+git_stash_list: ### List all stashes (alias: gstl)
+	git stash list
+
+git_stash_pop: ### Apply and remove most recent stash (alias: gstp)
+	git stash pop
+
+git_stash_apply: ### Apply most recent stash (keep in stash list) (alias: gsta)
+	git stash apply
+
+git_stash_drop: ### Drop most recent stash (alias: gstd)
+	git stash drop
+
+git_stash_clear: ### Clear all stashes (alias: gstc)
+	git stash clear
+
+git_clean_dry: ### Show what would be removed (dry run) (alias: gcld)
+	git clean -fd --dry-run
+
+git_clean: ### Remove untracked files and directories (alias: gcl)
+	git clean -fd
+
+git_reset_soft: ### Soft reset to previous commit (keeps changes staged) (alias: grs)
+	git reset --soft HEAD~1
+
+git_reset_hard: ### Hard reset to previous commit (discards all changes) (alias: grh)
+	git reset --hard HEAD~1
+
+git_reset_origin: ### Reset current branch to match origin (alias: gro)
+	git fetch origin
+	git reset --hard origin/$$(git branch --show-current)
+
+git_undo_commit: ### Undo last commit but keep changes unstaged (alias: guc)
+	git reset HEAD~1
+
+git_merge_develop: ### Merge develop into current branch (alias: gmd)
+	git merge develop
+
+git_merge_master: ### Merge master into current branch (alias: gmm)
+	git merge master
+
+git_merge_abort: ### Abort current merge (alias: gma)
+	git merge --abort
+
+git_rebase_develop: ### Rebase current branch with origin/develop (alias: grd)
+	git fetch origin
+	git rebase origin/develop
+
+git_rebase_master: ### Rebase current branch with origin/master (alias: grm)
+	git fetch origin
+	git rebase origin/master
+
+git_rebase_continue: ### Continue rebase after resolving conflicts (alias: grc)
+	git rebase --continue
+
+git_rebase_abort: ### Abort current rebase (alias: gra)
+	git rebase --abort
+
+git_push_develop: ### Push develop branch with force-with-lease (alias: gpd)
+	git push origin develop --force-with-lease
+
+git_push_master: ### Push master branch with force-with-lease (alias: gpm)
+	git push origin master --force-with-lease
+
+git_tag_list: ### List all tags (alias: gtl)
+	git tag -l
+
+git_tag_create: ### Create new tag (usage: make git_tag_create TAG=v1.0.0) (alias: gtc)
+	@if [ -z "$(TAG)" ]; then echo "Usage: make git_tag_create TAG=v1.0.0"; exit 1; fi
+	git tag $(TAG)
+
+git_tag_push: ### Push specific tag to origin (usage: make git_tag_push TAG=v1.0.0) (alias: gtp)
+	@if [ -z "$(TAG)" ]; then echo "Usage: make git_tag_push TAG=v1.0.0"; exit 1; fi
+	git push origin $(TAG)
+
+git_tag_push_all: ### Push all tags to origin (alias: gtpa)
+	git push origin --tags
+
+git_tag_delete: ### Delete local tag (usage: make git_tag_delete TAG=v1.0.0) (alias: gtd)
+	@if [ -z "$(TAG)" ]; then echo "Usage: make git_tag_delete TAG=v1.0.0"; exit 1; fi
+	git tag -d $(TAG)
+
+git_remote_list: ### List all remote repositories (alias: grl)
+	git remote -v
+
+git_prune: ### Remove references to deleted remote branches (alias: gpr)
+	git fetch --prune
+
+git_authors: ### List all commit authors (alias: gau)
+	git log --format='%aN' | sort -u
+
+git_stats: ### Show repository statistics (alias: gss)
+	@echo "=== Repository Statistics ==="
+	@echo "Total commits: $$(git rev-list --count HEAD)"
+	@echo "Total branches: $$(git branch -a | wc -l)"
+	@echo "Total tags: $$(git tag | wc -l)"
+	@echo "Total contributors: $$(git log --format='%aN' | sort -u | wc -l)"
+
+git_last_commit: ### Show details of the last commit (alias: glc)
+	git log -1 --stat
+
+git_whoami: ### Show configured git user (alias: gwho)
+	@echo "Name: $$(git config user.name)"
+	@echo "Email: $$(git config user.email)"
+
+# Aliases
+gs: git_status
+gl: git_log
+gla: git_log_all
+gd: git_diff
+gds: git_diff_staged
+gdb: git_diff_branch
+gf: git_fetch
+gpl: git_pull
+gpld: git_pull_develop
+gplm: git_pull_master
+gb: git_branches
+gba: git_branches_all
+gbr: git_branches_remote
+gbc: git_branch_current
+gbd: git_branch_delete
+gbdf: git_branch_delete_force
+gcd: git_checkout_develop
+gcm: git_checkout_master
+gco: git_checkout
+gcon: git_checkout_new
+gaa: git_add_all
+ga: git_add
+gc: git_commit
+gca: git_commit_amend
+gcam: git_commit_amend_msg
+gp: git_push
+gpf: git_push_force
+gpu: git_push_upstream
+gst: git_stash
+gstl: git_stash_list
+gstp: git_stash_pop
+gsta: git_stash_apply
+gstd: git_stash_drop
+gstc: git_stash_clear
+gcld: git_clean_dry
+gcl: git_clean
+grs: git_reset_soft
+grh: git_reset_hard
+gro: git_reset_origin
+guc: git_undo_commit
+gmd: git_merge_develop
+gmm: git_merge_master
+gma: git_merge_abort
+grd: git_rebase_develop
+grm: git_rebase_master
+grc: git_rebase_continue
+gra: git_rebase_abort
+gpd: git_push_develop
+gpm: git_push_master
+gtl: git_tag_list
+gtc: git_tag_create
+gtp: git_tag_push
+gtpa: git_tag_push_all
+gtd: git_tag_delete
+grl: git_remote_list
+gpr: git_prune
+gau: git_authors
+gss: git_stats
+glc: git_last_commit
+gwho: git_whoami

@@ -1,0 +1,239 @@
+# Container Shell Access
+docker_bash: ### [dbash] Open interactive bash shell in app container
+	$(docker-compose) exec ${main-container-name} bash
+
+docker_sh: ### [dsh] Open interactive sh shell in app container
+	$(docker-compose) exec ${main-container-name} sh
+
+docker_exec: ### [dexec] Execute command in app container (usage: make docker_exec CMD="ls -la")
+	@if [ -z "$(CMD)" ]; then echo "Usage: make docker_exec CMD=\"command\""; exit 1; fi
+	$(docker-compose) exec ${main-container-name} $(CMD)
+
+# Container Management
+docker_up: ### [dup] Start all containers in background
+	$(docker-compose) up -d
+
+docker_up_build: ### [dupb] Build and start all containers
+	$(docker-compose) up -d --build
+
+docker_up_force: ### [dupf] Force recreate and start all containers
+	$(docker-compose) up -d --force-recreate
+
+docker_down: ### [ddown] Stop and remove all containers
+	$(docker-compose) down
+
+docker_down_volumes: ### [ddownv] Stop containers and remove volumes
+	$(docker-compose) down -v
+
+docker_down_images: ### [ddowni] Stop containers and remove images
+	$(docker-compose) down --rmi all
+
+docker_restart: ### [drestart] Restart all containers
+	$(docker-compose) restart
+
+docker_restart_app: ### [drestarta] Restart only app container
+	$(docker-compose) restart ${main-container-name}
+
+docker_stop: ### [dstop] Stop all containers
+	$(docker-compose) stop
+
+docker_stop_app: ### [dstopa] Stop only app container
+	$(docker-compose) stop ${main-container-name}
+
+docker_start: ### [dstart] Start all containers
+	$(docker-compose) start
+
+docker_start_app: ### [dstarta] Start only app container
+	$(docker-compose) start ${main-container-name}
+
+# Logs and Monitoring
+docker_logs: ### [dlogs] Show logs from all containers
+	$(docker-compose) logs
+
+docker_logs_follow: ### [dlogsf] Follow logs from all containers
+	$(docker-compose) logs -f
+
+docker_logs_app: ### [dlogsa] Show logs from app container
+	$(docker-compose) logs ${main-container-name}
+
+docker_logs_tail: ### [dlogst] Show last N lines of logs (usage: make docker_logs_tail LINES=100)
+	@if [ -z "$(LINES)" ]; then \
+		$(docker-compose) logs --tail=50; \
+	else \
+		$(docker-compose) logs --tail=$(LINES); \
+	fi
+
+docker_ps: ### [dps] List running containers
+	$(docker-compose) ps
+
+docker_ps_all: ### [dpsa] List all containers (including stopped)
+	$(docker-compose) ps -a
+
+docker_top: ### [dtop] Display running processes in containers
+	$(docker-compose) top
+
+docker_stats: ### [dstats] Display live resource usage statistics
+	docker stats
+
+# Build and Images
+docker_build: ### [dbuild] Build all images
+	$(docker-compose) build
+
+docker_build_no_cache: ### [dbuildnc] Build all images without cache
+	$(docker-compose) build --no-cache
+
+docker_build_app: ### [dbuilda] Build only app image
+	$(docker-compose) build ${main-container-name}
+
+docker_build_app_no_cache: ### [dbuildanc] Build app image without cache
+	$(docker-compose) build --no-cache ${main-container-name}
+
+docker_pull: ### [dpull] Pull all images from registry
+	$(docker-compose) pull
+
+docker_push: ### [dpush] Push all images to registry
+	$(docker-compose) push
+
+docker_images: ### [dimages] List all Docker images
+	docker images
+
+docker_image_prune: ### [diprune] Remove unused images
+	docker image prune -f
+
+docker_image_prune_all: ### [diprunea] Remove all unused images
+	docker image prune -a -f
+
+# Inspection and Debugging
+docker_inspect: ### [dinspect] Inspect app container configuration
+	$(docker-compose) exec ${main-container-name} cat /etc/os-release
+
+docker_inspect_full: ### [dinspectf] Full inspect of app container (JSON)
+	docker inspect $$($(docker-compose) ps -q ${main-container-name})
+
+docker_config: ### [dconfig] Validate and view docker-compose configuration
+	$(docker-compose) config
+
+docker_config_services: ### [dconfs] List all services in docker-compose
+	$(docker-compose) config --services
+
+docker_port: ### [dport] Show port mappings for app container
+	$(docker-compose) port ${main-container-name}
+
+docker_env: ### [denv] Show environment variables in app container
+	$(docker-compose) exec ${main-container-name} env
+
+# Volume Management
+docker_volume_list: ### [dvls] List all volumes
+	docker volume ls
+
+docker_volume_prune: ### [dvprune] Remove unused volumes
+	docker volume prune -f
+
+docker_volume_inspect: ### [dvinspect] Inspect specific volume (usage: make docker_volume_inspect VOL=volume_name)
+	@if [ -z "$(VOL)" ]; then echo "Usage: make docker_volume_inspect VOL=volume_name"; exit 1; fi
+	docker volume inspect $(VOL)
+
+# Network Management
+docker_network_list: ### [dnls] List all networks
+	docker network ls
+
+docker_network_inspect: ### [dninspect] Inspect network used by compose
+	docker network inspect $$($(docker-compose) config | grep -A1 "networks:" | tail -1 | awk '{print $$1}' | tr -d ':')
+
+docker_network_prune: ### [dnprune] Remove unused networks
+	docker network prune -f
+
+# Cleanup
+docker_clean: ### [dclean] Remove stopped containers, unused networks, and dangling images
+	docker system prune -f
+
+docker_clean_all: ### [dcleana] Remove all unused containers, networks, images, and volumes
+	docker system prune -a -f
+
+docker_clean_volumes: ### [dcleanv] Remove all unused containers, networks, images, and volumes including volumes
+	docker system prune -a -f --volumes
+
+docker_container_prune: ### [dcprune] Remove all stopped containers
+	docker container prune -f
+
+# Copy Files
+docker_cp_to: ### [dcpto] Copy file to container (usage: make docker_cp_to SRC=./file.txt DEST=/app/file.txt)
+	@if [ -z "$(SRC)" ] || [ -z "$(DEST)" ]; then echo "Usage: make docker_cp_to SRC=./file.txt DEST=/app/file.txt"; exit 1; fi
+	docker cp $(SRC) $$($(docker-compose) ps -q ${main-container-name}):$(DEST)
+
+docker_cp_from: ### [dcpfrom] Copy file from container (usage: make docker_cp_from SRC=/app/file.txt DEST=./file.txt)
+	@if [ -z "$(SRC)" ] || [ -z "$(DEST)" ]; then echo "Usage: make docker_cp_from SRC=/app/file.txt DEST=./file.txt"; exit 1; fi
+	docker cp $$($(docker-compose) ps -q ${main-container-name}):$(SRC) $(DEST)
+
+# System Information
+docker_version: ### [dversion] Show Docker and Docker Compose versions
+	@echo "=== Docker Version ==="
+	docker --version
+	@echo ""
+	@echo "=== Docker Compose Version ==="
+	$(docker-compose) version
+
+docker_info: ### [dinfo] Display system-wide information
+	docker info
+
+docker_disk_usage: ### [ddisk] Show Docker disk usage
+	docker system df
+
+docker_disk_usage_verbose: ### [ddiskv] Show detailed Docker disk usage
+	docker system df -v
+
+# Aliases
+dbash: docker_bash
+dsh: docker_sh
+dexec: docker_exec
+dup: docker_up
+dupb: docker_up_build
+dupf: docker_up_force
+ddown: docker_down
+ddownv: docker_down_volumes
+ddowni: docker_down_images
+drestart: docker_restart
+drestarta: docker_restart_app
+dstop: docker_stop
+dstopa: docker_stop_app
+dstart: docker_start
+dstarta: docker_start_app
+dlogs: docker_logs
+dlogsf: docker_logs_follow
+dlogsa: docker_logs_app
+dlogst: docker_logs_tail
+dps: docker_ps
+dpsa: docker_ps_all
+dtop: docker_top
+dstats: docker_stats
+dbuild: docker_build
+dbuildnc: docker_build_no_cache
+dbuilda: docker_build_app
+dbuildanc: docker_build_app_no_cache
+dpull: docker_pull
+dpush: docker_push
+dimages: docker_images
+diprune: docker_image_prune
+diprunea: docker_image_prune_all
+dinspect: docker_inspect
+dinspectf: docker_inspect_full
+dconfig: docker_config
+dconfs: docker_config_services
+dport: docker_port
+denv: docker_env
+dvls: docker_volume_list
+dvprune: docker_volume_prune
+dvinspect: docker_volume_inspect
+dnls: docker_network_list
+dninspect: docker_network_inspect
+dnprune: docker_network_prune
+dclean: docker_clean
+dcleana: docker_clean_all
+dcleanv: docker_clean_volumes
+dcprune: docker_container_prune
+dcpto: docker_cp_to
+dcpfrom: docker_cp_from
+dversion: docker_version
+dinfo: docker_info
+ddisk: docker_disk_usage
+ddiskv: docker_disk_usage_verbose

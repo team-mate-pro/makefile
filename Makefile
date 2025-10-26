@@ -40,20 +40,20 @@ include phpstan/MAKE_PHPSTAN_v1
 
 ## --- Mandatory aliases ---
 
-make start: ### Full start and rebuild of the container
+start: ### Full start and rebuild of the container
 	echo "./tools/dev/start.sh"
 
-make fast: ### Fast start already built containers
+fast: ### Fast start already built containers
 	echo "./tools/dev/fast.sh"
 
-make stop: ### Stop all existing containers
+stop: ### Stop all existing containers
 	echo "./tools/dev/fast.sh"
 
-make check: ### [c] Should run all mandatory checks that run in CI and CD process
+check: ### [c] Should run all mandatory checks that run in CI and CD process
 	echo "alias to makefile for example: make check: phpstan phpcs etc"
 
-make check_fast: ### [cf] Should run all mandatory checks that run in CI and CD process skiping heavy ones like functional tests
+check_fast: ### [cf] Should run all mandatory checks that run in CI and CD process skiping heavy ones like functional tests
 	echo "alias to makefile for example: make check: phpstan phpcs etc"
 
-make fix: ### [f] Should run auto fix checks that run in CI and CD process
+fix: ### [f] Should run auto fix checks that run in CI and CD process
 	echo "alias to makefile for example: make check: phpcs_fix"

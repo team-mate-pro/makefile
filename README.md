@@ -13,7 +13,11 @@ Install via Composer:
 composer require team-mate-pro/make
 ```
 
-Then include the desired Makefile modules in your project's Makefile:
+The installation will automatically:
+- Copy the reference `Makefile` to your project root if one doesn't exist
+- Create/update `Makefile.example` if a `Makefile` already exists
+
+Then customize your Makefile and include the desired modules:
 
 ```makefile
 # Define mandatory variables

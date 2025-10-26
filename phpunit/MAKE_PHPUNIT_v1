@@ -1,142 +1,142 @@
-tests: tests_unit tests_integration ### Run all tests (unit + integration) (alias: t)
+tests: tests_unit tests_integration ### [t] Run all tests (unit + integration)
 	@echo "All tests completed"
 
-tests_unit: ### Run unit tests (alias: tu)
+tests_unit: ### [tu] Run unit tests
 	$(docker-compose) exec app composer tests:unit
 
-tests_integration: ### Run integration tests with full setup (cache, migrations, fixtures) (alias: ti)
+tests_integration: ### [ti] Run integration tests with full setup (cache, migrations, fixtures)
 	$(docker-compose) exec app composer tests:integration
 
-tests_integration_fast: ### Run integration tests without seed (group=fast) (alias: tif)
+tests_integration_fast: ### [tif] Run integration tests without seed (group=fast)
 	$(docker-compose) exec app composer tests:integration:fast
 
-tests_integration_wip: ### Run integration tests marked as WIP (group=wip) (alias: tiw)
+tests_integration_wip: ### [tiw] Run integration tests marked as WIP (group=wip)
 	$(docker-compose) exec app composer tests:integration:wip
 
-tests_integration_feature_toggle: ### Run feature toggle integration tests (group=feature-toggle) (alias: tift)
+tests_integration_feature_toggle: ### [tift] Run feature toggle integration tests (group=feature-toggle)
 	$(docker-compose) exec app composer tests:integration:feature-toggle
 
-tests_acceptance: ### Run acceptance tests (alias: ta)
+tests_acceptance: ### [ta] Run acceptance tests
 	$(docker-compose) exec app composer tests:acceptance
 
-tests_application: ### Run application tests (alias: tap)
+tests_application: ### [tap] Run application tests
 	$(docker-compose) exec app composer tests:application
 
-tests_application_fast: ### Run application tests fast (alias: tapf)
+tests_application_fast: ### [tapf] Run application tests fast
 	$(docker-compose) exec app composer tests:application:fast
 
-tests_application_no_seed: ### Run application tests without seed (alias: tans)
+tests_application_no_seed: ### [tans] Run application tests without seed
 	$(docker-compose) exec app composer tests:application:no-seed
 
-tests_functional: ### Run functional tests (application + integration) (alias: tf)
+tests_functional: ### [tf] Run functional tests (application + integration)
 	$(docker-compose) exec app composer tests:functional
 
-tests_e2e: ### Run end-to-end tests (alias: te2e)
+tests_e2e: ### [te2e] Run end-to-end tests
 	$(docker-compose) exec app composer tests:e2e
 
-tests_group: ### Run tests by group (usage: make tests_group GROUP=group-name) (alias: tg)
+tests_group: ### [tg] Run tests by group (usage: make tests_group GROUP=group-name)
 	@if [ -z "$(GROUP)" ]; then echo "Usage: make tests_group GROUP=group-name"; exit 1; fi
 	$(docker-compose) exec app composer phpunit -- --group=$(GROUP)
 
-tests_exclude_group: ### Exclude tests by group (usage: make tests_exclude_group GROUP=group-name) (alias: teg)
+tests_exclude_group: ### [teg] Exclude tests by group (usage: make tests_exclude_group GROUP=group-name)
 	@if [ -z "$(GROUP)" ]; then echo "Usage: make tests_exclude_group GROUP=group-name"; exit 1; fi
 	$(docker-compose) exec app composer phpunit -- --exclude-group=$(GROUP)
 
-tests_file: ### Run specific test file (usage: make tests_file FILE=tests/Unit/ExampleTest.php) (alias: tfile)
+tests_file: ### [tfile] Run specific test file (usage: make tests_file FILE=tests/Unit/ExampleTest.php)
 	@if [ -z "$(FILE)" ]; then echo "Usage: make tests_file FILE=tests/Unit/ExampleTest.php"; exit 1; fi
 	$(docker-compose) exec app composer phpunit -- $(FILE)
 
-tests_filter: ### Run tests matching filter pattern (usage: make tests_filter FILTER=testMethodName) (alias: tfilt)
+tests_filter: ### [tfilt] Run tests matching filter pattern (usage: make tests_filter FILTER=testMethodName)
 	@if [ -z "$(FILTER)" ]; then echo "Usage: make tests_filter FILTER=testMethodName"; exit 1; fi
 	$(docker-compose) exec app composer phpunit -- --filter=$(FILTER)
 
-tests_class: ### Run specific test class (usage: make tests_class CLASS=ExampleTest) (alias: tc)
+tests_class: ### [tc] Run specific test class (usage: make tests_class CLASS=ExampleTest)
 	@if [ -z "$(CLASS)" ]; then echo "Usage: make tests_class CLASS=ExampleTest"; exit 1; fi
 	$(docker-compose) exec app composer phpunit -- --filter=$(CLASS)
 
-tests_suite: ### Run specific test suite (usage: make tests_suite SUITE=unit) (alias: ts)
+tests_suite: ### [ts] Run specific test suite (usage: make tests_suite SUITE=unit)
 	@if [ -z "$(SUITE)" ]; then echo "Usage: make tests_suite SUITE=unit|integration|acceptance|application|functional"; exit 1; fi
 	$(docker-compose) exec app composer phpunit -- --testsuite=$(SUITE)
 
-tests_coverage: ### Generate code coverage report (HTML in coverage/) (alias: tcov)
+tests_coverage: ### [tcov] Generate code coverage report (HTML in coverage/)
 	$(docker-compose) exec app composer phpunit -- --coverage-html coverage
 
-tests_coverage_text: ### Generate code coverage report (text output) (alias: tcovt)
+tests_coverage_text: ### [tcovt] Generate code coverage report (text output)
 	$(docker-compose) exec app composer phpunit -- --coverage-text
 
-tests_coverage_clover: ### Generate code coverage report (Clover XML) (alias: tcovc)
+tests_coverage_clover: ### [tcovc] Generate code coverage report (Clover XML)
 	$(docker-compose) exec app composer phpunit -- --coverage-clover coverage.xml
 
-tests_with_coverage: ### Run all tests with HTML and text coverage (alias: twc)
+tests_with_coverage: ### [twc] Run all tests with HTML and text coverage
 	$(docker-compose) exec app composer phpunit -- --coverage-html coverage --coverage-text
 
-tests_testdox: ### Run tests with testdox output format (alias: tdox)
+tests_testdox: ### [tdox] Run tests with testdox output format
 	$(docker-compose) exec app composer phpunit
 
-tests_verbose: ### Run tests with verbose output (alias: tv)
+tests_verbose: ### [tv] Run tests with verbose output
 	$(docker-compose) exec app composer phpunit -- -v
 
-tests_debug: ### Run tests with debug output (alias: td)
+tests_debug: ### [td] Run tests with debug output
 	$(docker-compose) exec app composer phpunit -- --debug
 
-tests_stop_on_failure: ### Stop execution on first failure (alias: tsf)
+tests_stop_on_failure: ### [tsf] Stop execution on first failure
 	$(docker-compose) exec app composer phpunit -- --stop-on-failure
 
-tests_stop_on_error: ### Stop execution on first error (alias: tse)
+tests_stop_on_error: ### [tse] Stop execution on first error
 	$(docker-compose) exec app composer phpunit -- --stop-on-error
 
-tests_list_groups: ### List all available test groups (alias: tlg)
+tests_list_groups: ### [tlg] List all available test groups
 	$(docker-compose) exec app composer phpunit -- --list-groups
 
-tests_list_suites: ### List all available test suites (alias: tls)
+tests_list_suites: ### [tls] List all available test suites
 	$(docker-compose) exec app composer phpunit -- --list-suites
 
-tests_list_tests: ### List all tests without executing (alias: tlt)
+tests_list_tests: ### [tlt] List all tests without executing
 	$(docker-compose) exec app composer phpunit -- --list-tests
 
-tests_migrate: ### Run test database migrations (alias: tmig)
+tests_migrate: ### [tmig] Run test database migrations
 	$(docker-compose) exec app composer test:migrate
 
-tests_seed: ### Load test fixtures with custom purger (alias: tseed)
+tests_seed: ### [tseed] Load test fixtures with custom purger
 	$(docker-compose) exec app php bin/console doctrine:fixtures:load --purger=custom_purger --group=new --no-interaction --env=test
 
-tests_prepare: ### Prepare test environment (cache, migrations, fixtures) (alias: tprep)
+tests_prepare: ### [tprep] Prepare test environment (cache, migrations, fixtures)
 	$(docker-compose) exec app composer phpunit-functional
 
-tests_cache_clear: ### Clear test cache (alias: tcc)
+tests_cache_clear: ### [tcc] Clear test cache
 	$(docker-compose) exec app php bin/console cache:clear --env=test
 
-tests_parallel: ### Run tests in parallel (requires paratest) (alias: tpar)
+tests_parallel: ### [tpar] Run tests in parallel (requires paratest)
 	$(docker-compose) exec app vendor/bin/paratest
 
-tests_random: ### Run tests in random order (alias: trand)
+tests_random: ### [trand] Run tests in random order
 	$(docker-compose) exec app composer phpunit -- --order-by=random
 
-tests_order_reverse: ### Run tests in reverse order (alias: trev)
+tests_order_reverse: ### [trev] Run tests in reverse order
 	$(docker-compose) exec app composer phpunit -- --order-by=reverse
 
-tests_watch: ### Watch tests and rerun on file changes (requires phpunit-watcher) (alias: tw)
+tests_watch: ### [tw] Watch tests and rerun on file changes (requires phpunit-watcher)
 	$(docker-compose) exec app vendor/bin/phpunit-watcher watch
 
-tests_ci: ### Run tests for CI/CD with coverage and logging (alias: tci)
+tests_ci: ### [tci] Run tests for CI/CD with coverage and logging
 	$(docker-compose) exec app composer phpunit -- --coverage-clover coverage.xml --log-junit junit.xml
 
-tests_no_coverage: ### Run tests without coverage (faster) (alias: tnc)
+tests_no_coverage: ### [tnc] Run tests without coverage (faster)
 	$(docker-compose) exec app composer phpunit -- --no-coverage
 
-tests_colors: ### Run tests with colored output (alias: tcolor)
+tests_colors: ### [tcolor] Run tests with colored output
 	$(docker-compose) exec app composer phpunit -- --colors=always
 
-tests_no_colors: ### Run tests without colored output (alias: tncolor)
+tests_no_colors: ### [tncolor] Run tests without colored output
 	$(docker-compose) exec app composer phpunit -- --colors=never
 
-tests_infection: ### Run mutation testing with Infection (alias: tinf)
+tests_infection: ### [tinf] Run mutation testing with Infection
 	$(docker-compose) exec app vendor/bin/infection
 
-tests_baseline: ### Generate PHPUnit baseline for ignoring existing issues (alias: tbase)
+tests_baseline: ### [tbase] Generate PHPUnit baseline for ignoring existing issues
 	$(docker-compose) exec app composer phpunit -- --generate-baseline
 
-tests_repeat: ### Repeat tests multiple times (usage: make tests_repeat TIMES=5) (alias: trep)
+tests_repeat: ### [trep] Repeat tests multiple times (usage: make tests_repeat TIMES=5)
 	@if [ -z "$(TIMES)" ]; then echo "Usage: make tests_repeat TIMES=5"; exit 1; fi
 	$(docker-compose) exec app composer phpunit -- --repeat=$(TIMES)
 

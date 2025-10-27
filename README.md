@@ -86,34 +86,25 @@ fix: ### [f] Should run auto fix checks that run in CI and CD process
 	echo "alias to makefile for example: make check: phpcs_fix"
 ```
 
-## Nuxt 3 Commands
+## Docker tools
 
-### Development Commands (MAKE_NUXT_v1)
-- `make nuxt_install` - Install npm dependencies
-- `make nuxt_dev` - Start Nuxt development server
-- `make nuxt_dev_host` - Start dev server with host exposed
-- `make nuxt_build` - Build for production
-- `make nuxt_generate` - Generate static site (SSG)
-- `make nuxt_preview` - Preview production build
-- `make nuxt_clean` - Clean node_modules and cache
-- `make nuxt_postinstall` - Run postinstall script
-- `make nuxt_upgrade` - Upgrade Nuxt to latest version
+Each project should have `tools/{env}/` directory that contains mandatory and re-usable component for defined 
+environments. Sample output:
 
-### Testing Commands (MAKE_NUXT_TESTS_v1)
-- `make nuxt_test` - Run all tests
-- `make nuxt_test_unit` - Run unit tests with Vitest
-- `make nuxt_test_unit_watch` - Run unit tests in watch mode
-- `make nuxt_test_unit_coverage` - Run unit tests with coverage
-- `make nuxt_test_e2e` - Run e2e tests with Playwright
-- `make nuxt_test_e2e_ui` - Run e2e tests with UI mode
-- `make nuxt_test_component` - Run component tests
-
-### Quality Assurance Commands (MAKE_NUXT_QA_v1)
-- `make nuxt_qa` - Run all QA checks
-- `make nuxt_lint` - Run ESLint
-- `make nuxt_lint_fix` - Auto-fix ESLint issues
-- `make nuxt_format` - Format code with Prettier
-- `make nuxt_format_check` - Check code formatting
-- `make nuxt_typecheck` - Run TypeScript type checking
-- `make nuxt_analyze` - Analyze bundle size
+```bash
+tools/
+├── dev
+│   ├── check.sh
+│   ├── init-s3.sh
+│   ├── fast.sh
+│   ├── start.sh
+│   └── stop.sh
+├── prod
+│   ├── post_deploy.sh
+│   └── sync_permissions.sh
+├── qa
+│   └── git-checker.sh
+└── test
+    ├── application-tests-coverage.sh
+    └── test.sh
 ```

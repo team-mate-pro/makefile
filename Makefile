@@ -17,48 +17,76 @@ help: ### Display available targets and their descriptions
 ## --- General ---
 
 # General git commands
-include git/MAKE_GIT_v1
+include vendor/team-mate-pro/make/git/MAKE_GIT_v1
 
 # Docker
-include docker/MAKE_DOCKER_v1
+include vendor/team-mate-pro/make/docker/MAKE_DOCKER_v1
 
 # --- Backend ---
 
 # Symfony +7
-# include sf-7/MAKE_SYMFONY_v1
+include vendor/team-mate-pro/make/sf-7/MAKE_SYMFONY_v1
 
 # PHPCS
-# include phpcs/MAKE_PHPCS_v1
+include vendor/team-mate-pro/make/phpcs/MAKE_PHPCS_v1
 
 # PHPUNIT
-# include phpunit/MAKE_PHPUNIT_v1
+include vendor/team-mate-pro/make/phpunit/MAKE_PHPUNIT_v1
 
 # PHPSTAN
-# include phpstan/MAKE_PHPSTAN_v1
+include vendor/team-mate-pro/make/phpstan/MAKE_PHPSTAN_v1
 
 ## --- Frontend ---
 
-# Nuxt 3
-# include nuxt-3/MAKE_NUXT_v1
-# include nuxt-3/MAKE_NUXT_TESTS_v1
-# include nuxt-3/MAKE_NUXT_QA_v1
+# Vue
+
+run_form: ### Runs complain form vue in dev mode from the host machine
+	cd srr-form-vue && npm run dev
 
 ## --- Mandatory aliases ---
 
 start: ### Full start and rebuild of the container
-	echo "./tools/dev/start.sh"
+	./tools/dev/stop.sh
+	./tools/dev/start.sh
 
 fast: ### Fast start already built containers
-	echo "./tools/dev/fast.sh"
+	./tools/dev/fast.sh
 
 stop: ### Stop all existing containers
-	echo "./tools/dev/fast.sh"
+	./tools/dev/stop.sh
 
 check: ### [c] Should run all mandatory checks that run in CI and CD process
-	echo "alias to makefile for example: make check: phpstan phpcs etc"
+	make phpcs
+	make phpstan
+	make tests
 
-check_fast: ### [cf] Should run all mandatory checks that run in CI and CD process skiping heavy ones like functional tests
-	echo "alias to makefile for example: make check: phpstan phpcs etc"
+check_fast: ### [cf] Should run all mandatory checks that run in CI and CD process skipping heavy ones like functional tests
+	make phpcs_fix
+	make phpcs
+	make phpstan
 
 fix: ### [f] Should run auto fix checks that run in CI and CD process
-	echo "alias to makefile for example: make check: phpcs_fix"
+	make phpcs_fix
+
+tests: ### [t] Run all tests defined in the project
+	make tests_unit
+	make tests_integration
+	make tests_application
+
+## --- Project related scripts ---
+
+dev_seed: ### [ds] Seeds local environment
+	$(docker-compose) exec -it app composer dev:seed
+
+prod_seed: ### [ps] Seeds local environment like a prod is
+	$(docker-compose) exec -it app composer app:seed:prod
+
+ssh_stage: ### Fake temporary stage ssh
+	ssh ubuntu@54.38.55.136
+
+c: check
+cf: check_fast
+f: fix
+t: tests
+ds: dev_seed
+ps: prod_seed

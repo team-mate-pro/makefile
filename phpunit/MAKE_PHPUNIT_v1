@@ -1,6 +1,3 @@
-tests: tests_unit tests_integration ### [t] Run all tests (unit + integration)
-	@echo "All tests completed"
-
 tests_unit: ### [tu] Run unit tests
 	$(docker-compose) exec app composer tests:unit
 
@@ -141,7 +138,6 @@ tests_repeat: ### [trep] Repeat tests multiple times (usage: make tests_repeat T
 	$(docker-compose) exec app composer phpunit -- --repeat=$(TIMES)
 
 # Aliases
-t: tests
 tu: tests_unit
 ti: tests_integration
 tif: tests_integration_fast

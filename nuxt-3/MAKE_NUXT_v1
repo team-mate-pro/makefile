@@ -1,0 +1,45 @@
+.PHONY: nuxt_dev nuxt_dev_host nuxt_build nuxt_generate nuxt_preview nuxt_clean nuxt_postinstall nuxt_install
+
+## --- Nuxt 3 Development Commands ---
+
+# Prerequisites: Define these variables in your main Makefile
+# docker-compose = docker compose
+# main-container-name = app
+
+nuxt_install: ### [ni] Install npm dependencies
+	$(docker-compose) exec $(main-container-name) npm install
+
+nuxt_dev: ### [nd] Start Nuxt development server
+	$(docker-compose) exec $(main-container-name) npm run dev
+
+nuxt_dev_host: ### [ndh] Start Nuxt development server with host exposed (for external access)
+	$(docker-compose) exec $(main-container-name) npm run dev -- --host
+
+nuxt_build: ### [nb] Build Nuxt application for production
+	$(docker-compose) exec $(main-container-name) npm run build
+
+nuxt_generate: ### [ng] Generate static site (SSG)
+	$(docker-compose) exec $(main-container-name) npm run generate
+
+nuxt_preview: ### [np] Preview production build locally
+	$(docker-compose) exec $(main-container-name) npm run preview
+
+nuxt_clean: ### [nc] Clean node_modules and .nuxt cache
+	$(docker-compose) exec $(main-container-name) rm -rf node_modules .nuxt .output
+
+nuxt_postinstall: ### [npi] Run postinstall script (nuxt prepare)
+	$(docker-compose) exec $(main-container-name) npm run postinstall
+
+nuxt_upgrade: ### [nu] Upgrade Nuxt and related packages to latest
+	$(docker-compose) exec $(main-container-name) npm update nuxt @nuxt/devtools
+
+# Aliases
+ni: nuxt_install
+nd: nuxt_dev
+ndh: nuxt_dev_host
+nb: nuxt_build
+ng: nuxt_generate
+np: nuxt_preview
+nc: nuxt_clean
+npi: nuxt_postinstall
+nu: nuxt_upgrade

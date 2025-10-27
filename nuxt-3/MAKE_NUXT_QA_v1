@@ -1,0 +1,36 @@
+.PHONY: nuxt_qa nuxt_lint nuxt_lint_fix nuxt_format nuxt_format_check nuxt_typecheck
+
+## --- Nuxt 3 Quality Assurance Commands ---
+
+# Prerequisites: Define these variables in your main Makefile
+# docker-compose = docker compose
+# main-container-name = app
+
+nuxt_qa: nuxt_typecheck nuxt_lint nuxt_format_check ### [nqa] Run all QA checks (typecheck + lint + format)
+
+nuxt_lint: ### [nl] Run ESLint to check code quality
+	$(docker-compose) exec $(main-container-name) npm run lint
+
+nuxt_lint_fix: ### [nlf] Auto-fix ESLint issues
+	$(docker-compose) exec $(main-container-name) npm run lint -- --fix
+
+nuxt_format: ### [nf] Format code with Prettier
+	$(docker-compose) exec $(main-container-name) npm run format
+
+nuxt_format_check: ### [nfc] Check code formatting with Prettier
+	$(docker-compose) exec $(main-container-name) npm run format:check
+
+nuxt_typecheck: ### [ntyp] Run TypeScript type checking
+	$(docker-compose) exec $(main-container-name) npm run typecheck
+
+nuxt_analyze: ### [na] Analyze bundle size
+	$(docker-compose) exec $(main-container-name) npm run analyze
+
+# Aliases
+nqa: nuxt_qa
+nl: nuxt_lint
+nlf: nuxt_lint_fix
+nf: nuxt_format
+nfc: nuxt_format_check
+ntyp: nuxt_typecheck
+na: nuxt_analyze

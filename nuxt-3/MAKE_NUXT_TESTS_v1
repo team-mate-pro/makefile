@@ -1,0 +1,41 @@
+.PHONY: nuxt_test nuxt_test_unit nuxt_test_unit_watch nuxt_test_unit_coverage nuxt_test_e2e nuxt_test_e2e_ui nuxt_test_component
+
+## --- Nuxt 3 Testing Commands ---
+
+# Prerequisites: Define these variables in your main Makefile
+# docker-compose = docker compose
+# main-container-name = app
+
+nuxt_test: nuxt_test_unit ### [nt] Run all tests (unit + e2e)
+	$(MAKE) nuxt_test_e2e
+
+nuxt_test_unit: ### [ntu] Run unit tests with Vitest
+	$(docker-compose) exec $(main-container-name) npm run test:unit
+
+nuxt_test_unit_watch: ### [ntuw] Run unit tests in watch mode
+	$(docker-compose) exec $(main-container-name) npm run test:unit -- --watch
+
+nuxt_test_unit_coverage: ### [ntuc] Run unit tests with coverage report
+	$(docker-compose) exec $(main-container-name) npm run test:unit -- --coverage
+
+nuxt_test_e2e: ### [nte] Run e2e tests with Playwright
+	$(docker-compose) exec $(main-container-name) npm run test:e2e
+
+nuxt_test_e2e_ui: ### [nteui] Run e2e tests with Playwright UI mode
+	$(docker-compose) exec $(main-container-name) npm run test:e2e -- --ui
+
+nuxt_test_e2e_headed: ### [nteh] Run e2e tests in headed mode (show browser)
+	$(docker-compose) exec $(main-container-name) npm run test:e2e -- --headed
+
+nuxt_test_component: ### [ntc] Run component tests
+	$(docker-compose) exec $(main-container-name) npm run test:component
+
+# Aliases
+nt: nuxt_test
+ntu: nuxt_test_unit
+ntuw: nuxt_test_unit_watch
+ntuc: nuxt_test_unit_coverage
+nte: nuxt_test_e2e
+nteui: nuxt_test_e2e_ui
+nteh: nuxt_test_e2e_headed
+ntc: nuxt_test_component

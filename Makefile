@@ -38,6 +38,11 @@ include docker/MAKE_DOCKER_v1
 
 ## --- Frontend ---
 
+# Nuxt 3
+# include nuxt-3/MAKE_NUXT_v1
+# include nuxt-3/MAKE_NUXT_TESTS_v1
+# include nuxt-3/MAKE_NUXT_QA_v1
+
 ## --- Mandatory aliases ---
 
 start: ### Full start and rebuild of the container

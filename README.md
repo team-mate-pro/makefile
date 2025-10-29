@@ -10,7 +10,7 @@ All projects should follow internal conventions.
 Install via Composer:
 
 ```bash
-composer require team-mate-pro/make
+composer require --dev team-mate-pro/make
 ```
 
 The installation will automatically:

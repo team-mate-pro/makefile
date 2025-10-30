@@ -1,0 +1,58 @@
+# Claude Code Helper Commands
+# These commands provide shortcuts for common Claude Code CLI operations
+# All commands run on the host machine (not in Docker container)
+# Prerequisites: Claude Code CLI must be installed on the host system
+
+.PHONY: claude_ide claude_chat claude_chat_new claude_task claude_task_plan claude_help claude_version
+.PHONY: ci cc ccn ct ctp ch cv
+
+# --- IDE Integration ---
+
+claude_ide: ### [ci] Connect to PhpStorm IDE with mandatory permissions flag
+	claude --dangerously-skip-permissions /ide
+
+# --- Chat Sessions ---
+
+claude_chat: ### [cc] Start interactive chat session with Claude
+	claude chat
+
+claude_chat_new: ### [ccn] Start new chat session (discards current context)
+	claude chat --new
+
+# --- Task Execution ---
+
+claude_task: ### [ct] Execute a prompt with Claude (usage: make claude_task PROMPT="your prompt here")
+	@if [ -z "$(PROMPT)" ]; then \
+		echo "Error: PROMPT parameter is required"; \
+		echo "Usage: make claude_task PROMPT=\"your prompt here\""; \
+		exit 1; \
+	fi
+	claude --dangerously-skip-permissions "$(PROMPT)"
+
+claude_task_plan: ### [ctp] Execute prompt in plan mode (usage: make claude_task_plan PROMPT="your prompt here")
+	@if [ -z "$(PROMPT)" ]; then \
+		echo "Error: PROMPT parameter is required"; \
+		echo "Usage: make claude_task_plan PROMPT=\"your prompt here\""; \
+		exit 1; \
+	fi
+	claude --dangerously-skip-permissions --plan "$(PROMPT)"
+
+# --- Help and Info ---
+
+claude_help: ### [ch] Display Claude Code CLI help
+	@echo "=== Claude Code CLI Help ==="
+	@claude --help
+
+claude_version: ### [cv] Show Claude Code CLI version
+	@echo "=== Claude Code Version ==="
+	@claude --version
+
+# --- Aliases ---
+
+ci: claude_ide
+cc: claude_chat
+ccn: claude_chat_new
+ct: claude_task
+ctp: claude_task_plan
+ch: claude_help
+cv: claude_version

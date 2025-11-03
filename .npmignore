@@ -1,0 +1,31 @@
+# Git files
+.git/
+.gitignore
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Claude AI files
+.claude/
+
+# Development files
+composer.json
+composer.lock
+vendor/
+
+# Test files
+tools/tests/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

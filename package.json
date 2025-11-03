@@ -1,0 +1,66 @@
+{
+  "name": "@team-mate-pro/make",
+  "version": "1.0.0",
+  "description": "Modular Makefile snippets for Symfony 7 and Nuxt 3 projects with Docker Compose integration. Provides standardized development workflows including testing, quality assurance, and git operations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "bash ./tools/tests/check-makefile-aliases.sh"
+  },
+  "keywords": [
+    "makefile",
+    "symfony",
+    "symfony7",
+    "nuxt",
+    "nuxt3",
+    "vue3",
+    "docker",
+    "docker-compose",
+    "development",
+    "workflow",
+    "phpstan",
+    "phpcs",
+    "phpunit",
+    "playwright",
+    "vitest",
+    "eslint",
+    "git",
+    "devops",
+    "qa",
+    "testing",
+    "build-tools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/team-mate-pro/make.git"
+  },
+  "author": {
+    "name": "Sebastian Twaróg",
+    "email": "sebastian.twarog1989@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/team-mate-pro/make/issues"
+  },
+  "homepage": "https://github.com/team-mate-pro/make#readme",
+  "files": [
+    "docker/",
+    "git/",
+    "sf-7/",
+    "phpcs/",
+    "phpstan/",
+    "phpunit/",
+    "nuxt-3/",
+    "claude/",
+    "Makefile",
+    "README.md",
+    "LICENSE",
+    "CLAUDE.md",
+    "scripts/"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

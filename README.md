@@ -7,7 +7,43 @@ All projects should follow internal conventions.
 
 ## Installation
 
-Install via Composer:
+### Via npm (recommended for Node.js/Nuxt projects)
+
+```bash
+npm install --save-dev @team-mate-pro/make
+```
+
+Or with yarn:
+
+```bash
+yarn add -D @team-mate-pro/make
+```
+
+The installation will automatically:
+- Copy the reference `Makefile` to your project root if one doesn't exist
+- Create/update `Makefile.example` if a `Makefile` already exists
+
+Then customize your Makefile and include the desired modules:
+
+```makefile
+# Define mandatory variables
+docker-compose=docker compose
+main-container-name=app
+
+# Include desired modules from node_modules
+include node_modules/@team-mate-pro/make/git/MAKE_GIT_v1
+include node_modules/@team-mate-pro/make/docker/MAKE_DOCKER_v1
+include node_modules/@team-mate-pro/make/sf-7/MAKE_SYMFONY_v1
+include node_modules/@team-mate-pro/make/phpcs/MAKE_PHPCS_v1
+include node_modules/@team-mate-pro/make/phpunit/MAKE_PHPUNIT_v1
+include node_modules/@team-mate-pro/make/phpstan/MAKE_PHPSTAN_v1
+include node_modules/@team-mate-pro/make/nuxt-3/MAKE_NUXT_v1
+include node_modules/@team-mate-pro/make/nuxt-3/MAKE_NUXT_TESTS_v1
+include node_modules/@team-mate-pro/make/nuxt-3/MAKE_NUXT_QA_v1
+include node_modules/@team-mate-pro/make/claude/MAKE_CLAUDE_v1
+```
+
+### Via Composer (for PHP/Symfony projects)
 
 ```bash
 composer require --dev team-mate-pro/make
@@ -34,6 +70,7 @@ include vendor/team-mate-pro/make/phpstan/MAKE_PHPSTAN_v1
 include vendor/team-mate-pro/make/nuxt-3/MAKE_NUXT_v1
 include vendor/team-mate-pro/make/nuxt-3/MAKE_NUXT_TESTS_v1
 include vendor/team-mate-pro/make/nuxt-3/MAKE_NUXT_QA_v1
+include vendor/team-mate-pro/make/claude/MAKE_CLAUDE_v1
 ```
 
 ## Available Modules

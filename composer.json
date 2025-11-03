@@ -25,14 +25,5 @@
     ],
     "require": {
         "php": ">=8.1"
-    },
-    "minimum-stability": "stable",
-    "scripts": {
-        "post-install-cmd": [
-            "@php -r \"if (!file_exists('Makefile')) { copy('vendor/team-mate-pro/make/Makefile', 'Makefile'); } else { copy('vendor/team-mate-pro/make/Makefile', 'Makefile.example'); }\""
-        ],
-        "post-update-cmd": [
-            "@php -r \"copy('vendor/team-mate-pro/make/Makefile', 'Makefile.example');\""
-        ]
     }
 }

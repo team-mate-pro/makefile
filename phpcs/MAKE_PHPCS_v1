@@ -1,55 +1,55 @@
 phpcs: ### [cs] Run PHPCS with configured standard and exclusions
-	$(docker-compose) exec app composer phpcs
+	$(docker-compose) exec $(main-container-name) composer phpcs
 
 phpcs_check: ### [csc] Check code styling with PHPCS
-	$(docker-compose) exec app composer phpcs
+	$(docker-compose) exec $(main-container-name) composer phpcs
 
 phpcs_fix: ### [csf] Auto-fix code styling with PHPCBF
-	$(docker-compose) exec app composer phpcs:fix
+	$(docker-compose) exec $(main-container-name) composer phpcs:fix
 
 phpcbf: ### [cbf] Run PHP Code Beautifier and Fixer
-	$(docker-compose) exec app composer phpcs:fix
+	$(docker-compose) exec $(main-container-name) composer phpcs:fix
 
 phpcs_file: ### [csfile] Check specific file (usage: make phpcs_file FILE=src/Entity/User.php)
 	@if [ -z "$(FILE)" ]; then echo "Usage: make phpcs_file FILE=src/Entity/User.php"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpcs --standard=phpcs.xml --exclude=Generic.Files.LineLength $(FILE)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpcs --standard=phpcs.xml --exclude=Generic.Files.LineLength $(FILE)
 
 phpcs_fix_file: ### [csffile] Fix specific file (usage: make phpcs_fix_file FILE=src/Entity/User.php)
 	@if [ -z "$(FILE)" ]; then echo "Usage: make phpcs_fix_file FILE=src/Entity/User.php"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpcbf --standard=phpcs.xml --exclude=Generic.Files.LineLength $(FILE)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpcbf --standard=phpcs.xml --exclude=Generic.Files.LineLength $(FILE)
 
 phpcs_dir: ### [csdir] Check specific directory (usage: make phpcs_dir DIR=src/Service)
 	@if [ -z "$(DIR)" ]; then echo "Usage: make phpcs_dir DIR=src/Service"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpcs --standard=phpcs.xml --exclude=Generic.Files.LineLength $(DIR)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpcs --standard=phpcs.xml --exclude=Generic.Files.LineLength $(DIR)
 
 phpcs_fix_dir: ### [csfdir] Fix specific directory (usage: make phpcs_fix_dir DIR=src/Service)
 	@if [ -z "$(DIR)" ]; then echo "Usage: make phpcs_fix_dir DIR=src/Service"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpcbf --standard=phpcs.xml --exclude=Generic.Files.LineLength $(DIR)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpcbf --standard=phpcs.xml --exclude=Generic.Files.LineLength $(DIR)
 
 phpcs_dry_run: ### [csdry] Dry run - show what would be fixed without fixing
-	$(docker-compose) exec app composer phpcs:fix -- --dry-run
+	$(docker-compose) exec $(main-container-name) composer phpcs:fix -- --dry-run
 
 phpcs_diff: ### [csdiff] Show diff of fixes that would be applied
-	$(docker-compose) exec app composer phpcs:fix -- --diff
+	$(docker-compose) exec $(main-container-name) composer phpcs:fix -- --diff
 
 phpcs_parallel: ### [cspar] Run in parallel (usage: make phpcs_parallel PROCESSES=4)
 	@if [ -z "$(PROCESSES)" ]; then \
-		$(docker-compose) exec app composer phpcs -- --parallel=1; \
+		$(docker-compose) exec $(main-container-name) composer phpcs -- --parallel=1; \
 	else \
-		$(docker-compose) exec app composer phpcs -- --parallel=$(PROCESSES); \
+		$(docker-compose) exec $(main-container-name) composer phpcs -- --parallel=$(PROCESSES); \
 	fi
 
 phpcs_ci: ### [csci] Run for CI/CD (no colors, checkstyle report)
-	$(docker-compose) exec app composer phpcs -- --no-colors --report=checkstyle
+	$(docker-compose) exec $(main-container-name) composer phpcs -- --no-colors --report=checkstyle
 
 phpcs_config_show: ### [csconf] Show PHPCS configuration settings
-	$(docker-compose) exec app vendor/bin/phpcs --config-show
+	$(docker-compose) exec $(main-container-name) vendor/bin/phpcs --config-show
 
 phpcs_list_standards: ### [cslstd] List installed coding standards
-	$(docker-compose) exec app vendor/bin/phpcs -i
+	$(docker-compose) exec $(main-container-name) vendor/bin/phpcs -i
 
 phpcs_explain: ### [csexp] Explain coding standard rules
-	$(docker-compose) exec app composer phpcs -- --explain
+	$(docker-compose) exec $(main-container-name) composer phpcs -- --explain
 
 # Aliases
 cs: phpcs

@@ -1,50 +1,50 @@
 phpstan: ### [ps] Run PHPStan with cache warmup and configured settings
-	$(docker-compose) exec app composer phpstan
+	$(docker-compose) exec $(main-container-name) composer phpstan
 
 phpstan_baseline: ### [psb] Generate PHPStan baseline file
-	$(docker-compose) exec app composer phpstan:baseline
+	$(docker-compose) exec $(main-container-name) composer phpstan:baseline
 
 phpstan_analyze: ### [psa] Run PHPStan analysis only (no cache warmup)
-	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G
 
 phpstan_clear: ### [psc] Clear PHPStan result cache
-	$(docker-compose) exec app vendor/bin/phpstan clear-result-cache
+	$(docker-compose) exec $(main-container-name) vendor/bin/phpstan clear-result-cache
 
 phpstan_file: ### [psf] Analyze specific file (usage: make phpstan_file FILE=src/Entity/User.php)
 	@if [ -z "$(FILE)" ]; then echo "Usage: make phpstan_file FILE=src/Entity/User.php"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(FILE)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(FILE)
 
 phpstan_dir: ### [psd] Analyze specific directory (usage: make phpstan_dir DIR=src/Service)
 	@if [ -z "$(DIR)" ]; then echo "Usage: make phpstan_dir DIR=src/Service"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(DIR)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(DIR)
 
 phpstan_paths: ### [psp] Analyze multiple paths (usage: make phpstan_paths PATHS="src/Entity src/Service")
 	@if [ -z "$(PATHS)" ]; then echo "Usage: make phpstan_paths PATHS=\"src/Entity src/Service\""; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(PATHS)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G $(PATHS)
 
 phpstan_memory_limit: ### [psm] Run with custom memory limit (usage: make phpstan_memory_limit MEMORY=2G)
 	@if [ -z "$(MEMORY)" ]; then echo "Usage: make phpstan_memory_limit MEMORY=2G"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit $(MEMORY)
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit $(MEMORY)
 
 phpstan_debug: ### [psdbg] Run PHPStan with debug output
-	$(docker-compose) exec app composer phpstan -- --debug
+	$(docker-compose) exec $(main-container-name) composer phpstan -- --debug
 
 phpstan_configuration: ### [psconf] Use specific config file (usage: make phpstan_configuration CONFIG=phpstan-custom.neon)
 	@if [ -z "$(CONFIG)" ]; then echo "Usage: make phpstan_configuration CONFIG=phpstan-custom.neon"; exit 1; fi
-	$(docker-compose) exec app php ./vendor/bin/phpstan analyse -c $(CONFIG) --memory-limit 1G
+	$(docker-compose) exec $(main-container-name) php ./vendor/bin/phpstan analyse -c $(CONFIG) --memory-limit 1G
 
 phpstan_ci: ### [psci] Run PHPStan for CI/CD (no progress, checkstyle format)
-	$(docker-compose) exec app composer phpstan -- --no-progress --error-format=checkstyle
+	$(docker-compose) exec $(main-container-name) composer phpstan -- --no-progress --error-format=checkstyle
 
 phpstan_parallel: ### [pspar] Run with parallel processing (usage: make phpstan_parallel PROCESSES=4)
 	@if [ -z "$(PROCESSES)" ]; then \
-		$(docker-compose) exec app composer phpstan; \
+		$(docker-compose) exec $(main-container-name) composer phpstan; \
 	else \
-		$(docker-compose) exec app composer phpstan -- --parallel=$(PROCESSES); \
+		$(docker-compose) exec $(main-container-name) composer phpstan -- --parallel=$(PROCESSES); \
 	fi
 
 phpstan_list_files: ### [pslf] List files that will be analyzed
-	$(docker-compose) exec app composer phpstan -- --list-files
+	$(docker-compose) exec $(main-container-name) composer phpstan -- --list-files
 
 # Aliases
 ps: phpstan

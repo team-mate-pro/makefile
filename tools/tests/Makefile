@@ -7,6 +7,7 @@
 
 docker-compose=docker compose
 main-container-name=app
+vendor-dir=vendor/team-mate-pro/make/
 
 help: ### Display available targets and their descriptions
 	@echo "Usage: make [target]"

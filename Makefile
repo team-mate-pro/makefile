@@ -7,6 +7,7 @@
 
 docker-compose=docker compose
 main-container-name=app
+vendor-dir=
 
 help: ### Display available targets and their descriptions
 	@echo "Usage: make [target]"
@@ -17,13 +18,13 @@ help: ### Display available targets and their descriptions
 ### --- General ---
 
 # General git commands
-include vendor/team-mate-pro/make/git/MAKE_GIT_v1
+include $(vendor-dir)git/MAKE_GIT_v1
 
 # Docker
-include vendor/team-mate-pro/make/docker/MAKE_DOCKER_v1
+include $(vendor-dir)docker/MAKE_DOCKER_v1
 
 # Claude Code
-include vendor/team-mate-pro/make/claude/MAKE_CLAUDE_v1
+include $(vendor-dir)claude/MAKE_CLAUDE_v1
 
 ## Local
 

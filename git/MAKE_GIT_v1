@@ -13,8 +13,8 @@ git_diff: ### [gd] Show unstaged changes
 git_diff_staged: ### [gds] Show staged changes
 	git diff --cached
 
-git_diff_branch: ### [gdb] Show differences between current branch and develop
-	git diff develop
+git_diff_branch: ### [gdb] Show differences between current branch and $(secondary-branch-name)
+	git diff $(secondary-branch-name)
 
 git_fetch: ### [gf] Fetch all branches from origin
 	git fetch origin
@@ -22,11 +22,11 @@ git_fetch: ### [gf] Fetch all branches from origin
 git_pull: ### [gpl] Pull current branch from origin
 	git pull origin
 
-git_pull_develop: ### [gpld] Pull develop branch from origin
-	git pull origin develop
+git_pull_develop: ### [gpld] Pull $(secondary-branch-name) branch from origin
+	git pull origin $(secondary-branch-name)
 
-git_pull_master: ### [gplm] Pull master branch from origin
-	git pull origin master
+git_pull_master: ### [gplm] Pull $(main-branch-name) branch from origin
+	git pull origin $(main-branch-name)
 
 git_branches: ### [gb] List all local branches
 	git branch
@@ -48,11 +48,11 @@ git_branch_delete_force: ### [gbdf] Force delete local branch (usage: make git_b
 	@if [ -z "$(BRANCH)" ]; then echo "Usage: make git_branch_delete_force BRANCH=branch-name"; exit 1; fi
 	git branch -D $(BRANCH)
 
-git_checkout_develop: ### [gcd] Checkout develop branch
-	git checkout develop
+git_checkout_develop: ### [gcd] Checkout $(secondary-branch-name) branch
+	git checkout $(secondary-branch-name)
 
-git_checkout_master: ### [gcm] Checkout master branch
-	git checkout master
+git_checkout_master: ### [gcm] Checkout $(main-branch-name) branch
+	git checkout $(main-branch-name)
 
 git_checkout: ### [gco] Checkout branch (usage: make git_checkout BRANCH=branch-name)
 	@if [ -z "$(BRANCH)" ]; then echo "Usage: make git_checkout BRANCH=branch-name"; exit 1; fi
@@ -126,22 +126,22 @@ git_reset_origin: ### [gro] Reset current branch to match origin
 git_undo_commit: ### [guc] Undo last commit but keep changes unstaged
 	git reset HEAD~1
 
-git_merge_develop: ### [gmd] Merge develop into current branch
-	git merge develop
+git_merge_develop: ### [gmd] Merge $(secondary-branch-name) into current branch
+	git merge $(secondary-branch-name)
 
-git_merge_master: ### [gmm] Merge master into current branch
-	git merge master
+git_merge_master: ### [gmm] Merge $(main-branch-name) into current branch
+	git merge $(main-branch-name)
 
 git_merge_abort: ### [gma] Abort current merge
 	git merge --abort
 
-git_rebase_develop: ### [grd] Rebase current branch with origin/develop
+git_rebase_develop: ### [grd] Rebase current branch with origin/$(secondary-branch-name)
 	git fetch origin
-	git rebase origin/develop
+	git rebase origin/$(secondary-branch-name)
 
-git_rebase_master: ### [grm] Rebase current branch with origin/master
+git_rebase_master: ### [grm] Rebase current branch with origin/$(main-branch-name)
 	git fetch origin
-	git rebase origin/master
+	git rebase origin/$(main-branch-name)
 
 git_rebase_continue: ### [grc] Continue rebase after resolving conflicts
 	git rebase --continue
@@ -149,11 +149,11 @@ git_rebase_continue: ### [grc] Continue rebase after resolving conflicts
 git_rebase_abort: ### [gra] Abort current rebase
 	git rebase --abort
 
-git_push_develop: ### [gpd] Push develop branch with force-with-lease
-	git push origin develop --force-with-lease
+git_push_develop: ### [gpd] Push $(secondary-branch-name) branch with force-with-lease
+	git push origin $(secondary-branch-name) --force-with-lease
 
-git_push_master: ### [gpm] Push master branch with force-with-lease
-	git push origin master --force-with-lease
+git_push_master: ### [gpm] Push $(main-branch-name) branch with force-with-lease
+	git push origin $(main-branch-name) --force-with-lease
 
 git_tag_list: ### [gtl] List all tags
 	git tag -l

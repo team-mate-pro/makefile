@@ -196,7 +196,7 @@ git_whoami: ### [gwho] Show configured git user
 	@echo "Name: $$(git config user.name)"
 	@echo "Email: $$(git config user.email)"
 
-git_tag: ### Create and push next incremental git tag (e.g., 1.0.1 -> 1.0.2), push current branch, and manage dev-master tag
+git_tag_incremental: ### [gti] Create and push next incremental git tag (e.g., 1.0.1 -> 1.0.2), push current branch, and manage dev-master tag
 	@echo "Fetching existing tags..."
 	@git fetch --tags 2>/dev/null || true
 	@CURRENT_BRANCH=$$(git rev-parse --abbrev-ref HEAD); \
@@ -288,3 +288,4 @@ gau: git_authors
 gss: git_stats
 glc: git_last_commit
 gwho: git_whoami
+gti: git_tag_incremental

@@ -7,7 +7,8 @@
 
 docker-compose=docker compose
 main-container-name=app
-vendor-dir=
+main-branch-name=master
+secondary-branch-name=slave
 
 help: ### Display available targets and their descriptions
 	@echo "Usage: make [target]"

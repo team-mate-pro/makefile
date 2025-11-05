@@ -1,0 +1,48 @@
+.PHONY: help
+
+docker-compose=docker compose
+main-container-name=app
+main-branch-name=master
+secondary-branch-name=slave
+
+help: ### Display available targets and their descriptions
+	@echo "Usage: make [target]"
+	@echo "Targets:"
+	@awk 'BEGIN {FS = ":.*?### "}; /^[a-zA-Z_-]+:.*?### / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo ""
+
+include tools/dev/make/MAKE_QA
+
+fast: ### Spawns quickly all services (of already built containers)
+	./tools/dev/fast.sh
+
+start: ### Starts all services with full rebuild
+	./tools/dev/start.sh
+
+stop: ### Stops all services and drops volumes
+	./tools/dev/stop.sh
+
+vendor: ### Copy vendor node modules
+	sudo docker cp gate-frontend-app:/app/node_modules/ ./../../
+
+check: ### [c] Should run all mandatory checks that run in CI and CD process
+	make lint_fix
+	make lint
+
+check_fast: ### [cf] Should run all mandatory checks that run in CI and CD process skipping heavy ones like functional tests
+	make lint
+
+fix: ### [f] Should run auto fix checks that run in CI and CD process
+	make phpcs_fix
+
+tests: ### [t] Run all tests defined in the project
+	make tests
+
+## --- Project related scripts ---
+
+ssh: ### SSH connection command
+	ssh {}
+
+c: check
+cf: check_fast
+f: fix

@@ -1,6 +1,6 @@
 {
     "name": "team-mate-pro/make",
-    "version": "1.0.4",
+    "version": "1.0.6",
     "description": "Modular Makefile snippets for Symfony projects with Docker Compose integration. Provides standardized development workflows for Team Mate Pro projects.",
     "type": "library",
     "keywords": [

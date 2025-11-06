@@ -9,6 +9,7 @@ docker-compose=docker compose
 main-container-name=app
 main-branch-name=master
 secondary-branch-name=slave
+vendor-dir=
 
 help: ### Display available targets and their descriptions
 	@echo "Usage: make [target]"
@@ -26,6 +27,14 @@ include $(vendor-dir)docker/MAKE_DOCKER_v1
 
 # Claude Code
 include $(vendor-dir)claude/MAKE_CLAUDE_v1
+
+## --- NPM & Package Management ---
+
+# NPM Registry Operations (publishing, versioning, tags)
+include $(vendor-dir)npm/MAKE_NPM_REGISTRY_v1
+
+# NPM Dependency Management (install, update, audit)
+include $(vendor-dir)npm/MAKE_NPM_DEPS_v1
 
 ## Local
 

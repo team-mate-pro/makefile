@@ -18,35 +18,43 @@ help: ### Display available targets and their descriptions
 ## --- General ---
 
 # General git commands
-include ./../../git/MAKE_GIT_v1
+include $(vendor-dir)git/MAKE_GIT_v1
 
 # Docker
-include ./../../docker/MAKE_DOCKER_v1
+include $(vendor-dir)docker/MAKE_DOCKER_v1
 
-# --- Backend ---
+## --- Backend ---
 
 # Symfony +7
-include ./../../sf-7/MAKE_SYMFONY_v1
+include $(vendor-dir)sf-7/MAKE_SYMFONY_v1
 
 # PHPCS
-include ./../../phpcs/MAKE_PHPCS_v1
+include $(vendor-dir)phpcs/MAKE_PHPCS_v1
 
 # PHPUNIT
-include ./../../phpunit/MAKE_PHPUNIT_v1
+include $(vendor-dir)phpunit/MAKE_PHPUNIT_v1
 
 # PHPSTAN
-include ./../../phpstan/MAKE_PHPSTAN_v1
+include $(vendor-dir)phpstan/MAKE_PHPSTAN_v1
 
 ## --- Frontend ---
 
-# Nuxt 3
-include ./../../nuxt-3/MAKE_NUXT_v1
-include ./../../nuxt-3/MAKE_NUXT_TESTS_v1
-include ./../../nuxt-3/MAKE_NUXT_QA_v1
+# Nuxt 3 Development
+include $(vendor-dir)nuxt-3/MAKE_NUXT_v1
 
-# NPM & Package Management
-include ./../../npm/MAKE_NPM_REGISTRY_v1
-include ./../../npm/MAKE_NPM_DEPS_v1
+# Nuxt 3 Testing
+include $(vendor-dir)nuxt-3/MAKE_NUXT_TESTS_v1
+
+# Nuxt 3 Quality Assurance
+include $(vendor-dir)nuxt-3/MAKE_NUXT_QA_v1
+
+## --- NPM & Package Management ---
+
+# NPM Registry Operations (publishing, versioning, tags)
+include $(vendor-dir)npm/MAKE_NPM_REGISTRY_v1
+
+# NPM Dependency Management (install, update, audit)
+include $(vendor-dir)npm/MAKE_NPM_DEPS_v1
 
 ## --- Mandatory aliases ---
 

@@ -1,9 +1,15 @@
+### This is a reference (complete) MAKE file setup for NPM projects
+### Remove the functionalities you don't need
+
 .PHONY: help
+
+## --- Mandatory variables ---
 
 docker-compose=docker compose
 main-container-name=app
 main-branch-name=master
 secondary-branch-name=slave
+vendor-dir=vendor/team-mate-pro/make/
 
 help: ### Display available targets and their descriptions
 	@echo "Usage: make [target]"
@@ -11,7 +17,35 @@ help: ### Display available targets and their descriptions
 	@awk 'BEGIN {FS = ":.*?### "}; /^[a-zA-Z_-]+:.*?### / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo ""
 
-include tools/dev/make/MAKE_QA
+## --- General ---
+
+# General git commands
+include $(vendor-dir)git/MAKE_GIT_v1
+
+# Docker
+include $(vendor-dir)docker/MAKE_DOCKER_v1
+
+# Claude Code
+include $(vendor-dir)claude/MAKE_CLAUDE_v1
+
+## --- NPM & Package Management ---
+
+# NPM Registry Operations (publishing, versioning, tags)
+include $(vendor-dir)npm/MAKE_NPM_REGISTRY_v1
+
+# NPM Dependency Management (install, update, audit)
+include $(vendor-dir)npm/MAKE_NPM_DEPS_v1
+
+## --- Frontend ---
+
+# Nuxt 3 Development
+include $(vendor-dir)nuxt-3/MAKE_NUXT_v1
+
+# Nuxt 3 Testing
+include $(vendor-dir)nuxt-3/MAKE_NUXT_TESTS_v1
+
+# Nuxt 3 Quality Assurance
+include $(vendor-dir)nuxt-3/MAKE_NUXT_QA_v1
 
 fast: ### Spawns quickly all services (of already built containers)
 	./tools/dev/fast.sh
@@ -26,17 +60,19 @@ vendor: ### Copy vendor node modules
 	sudo docker cp gate-frontend-app:/app/node_modules/ ./../../
 
 check: ### [c] Should run all mandatory checks that run in CI and CD process
-	make lint_fix
-	make lint
+	make nuxt_qa
+	make nuxt_test
 
 check_fast: ### [cf] Should run all mandatory checks that run in CI and CD process skipping heavy ones like functional tests
-	make lint
+	make nuxt_qa
+	make nuxt_test_unit
 
 fix: ### [f] Should run auto fix checks that run in CI and CD process
-	make phpcs_fix
+	make nuxt_lint_fix
+	make nuxt_format
 
 tests: ### [t] Run all tests defined in the project
-	make tests
+	make nuxt_test
 
 ## --- Project related scripts ---
 

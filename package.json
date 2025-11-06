@@ -1,6 +1,6 @@
 {
   "name": "@team-mate-pro/make",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "Modular Makefile snippets for Symfony 7 and Nuxt 3 projects with Docker Compose integration. Provides standardized development workflows including testing, quality assurance, and git operations.",
   "main": "index.js",
   "scripts": {

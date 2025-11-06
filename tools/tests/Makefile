@@ -44,6 +44,10 @@ include ./../../nuxt-3/MAKE_NUXT_v1
 include ./../../nuxt-3/MAKE_NUXT_TESTS_v1
 include ./../../nuxt-3/MAKE_NUXT_QA_v1
 
+# NPM & Package Management
+include ./../../npm/MAKE_NPM_REGISTRY_v1
+include ./../../npm/MAKE_NPM_DEPS_v1
+
 ## --- Mandatory aliases ---
 
 start: ### Full start and rebuild of the container

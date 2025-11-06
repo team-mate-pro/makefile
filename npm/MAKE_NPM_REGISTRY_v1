@@ -1,0 +1,167 @@
+# NPM Registry Commands v1
+# Commands for publishing, versioning, and managing NPM packages
+# Usage: include this file in your main Makefile
+# Required variables: docker-compose, main-container-name
+
+.PHONY: npm_version_check npm_version_patch npm_version_minor npm_version_major
+.PHONY: npm_publish npm_publish_dry npm_publish_public npm_publish_tag
+.PHONY: npm_unpublish npm_deprecate npm_info npm_whoami npm_login
+
+# Version Management
+npm_version_check: ### [nvc] Show current package version
+	$(docker-compose) exec $(main-container-name) npm version
+
+npm_version_patch: ### [nvp] Bump patch version (1.0.0 -> 1.0.1)
+	$(docker-compose) exec $(main-container-name) npm version patch
+
+npm_version_minor: ### [nvm] Bump minor version (1.0.0 -> 1.1.0)
+	$(docker-compose) exec $(main-container-name) npm version minor
+
+npm_version_major: ### [nvmj] Bump major version (1.0.0 -> 2.0.0)
+	$(docker-compose) exec $(main-container-name) npm version major
+
+npm_version_prerelease: ### [nvpr] Bump prerelease version (1.0.0 -> 1.0.1-0)
+	$(docker-compose) exec $(main-container-name) npm version prerelease
+
+npm_version_prepatch: ### [nvpp] Bump prepatch version (1.0.0 -> 1.0.1-0)
+	$(docker-compose) exec $(main-container-name) npm version prepatch
+
+npm_version_preminor: ### [nvpm] Bump preminor version (1.0.0 -> 1.1.0-0)
+	$(docker-compose) exec $(main-container-name) npm version preminor
+
+npm_version_premajor: ### [nvpmj] Bump premajor version (1.0.0 -> 2.0.0-0)
+	$(docker-compose) exec $(main-container-name) npm version premajor
+
+# Publishing
+npm_publish: ### [npub] Publish package to npm registry
+	$(docker-compose) exec $(main-container-name) npm publish
+
+npm_publish_dry: ### [npubd] Test publish without actually publishing (dry run)
+	$(docker-compose) exec $(main-container-name) npm publish --dry-run
+
+npm_publish_public: ### [npubp] Publish package as public (for scoped packages)
+	$(docker-compose) exec $(main-container-name) npm publish --access public
+
+npm_publish_tag: ### [npubt] Publish package with specific tag (usage: make npm_publish_tag TAG=beta)
+	$(docker-compose) exec $(main-container-name) npm publish --tag $(TAG)
+
+npm_publish_next: ### [npubn] Publish package with 'next' tag
+	$(docker-compose) exec $(main-container-name) npm publish --tag next
+
+npm_publish_beta: ### [npubb] Publish package with 'beta' tag
+	$(docker-compose) exec $(main-container-name) npm publish --tag beta
+
+npm_publish_alpha: ### [npuba] Publish package with 'alpha' tag
+	$(docker-compose) exec $(main-container-name) npm publish --tag alpha
+
+# Package Management
+npm_unpublish: ### [nunp] Unpublish specific version (usage: make npm_unpublish VERSION=1.0.0)
+	$(docker-compose) exec $(main-container-name) npm unpublish $(shell npm pkg get name | tr -d '"')@$(VERSION)
+
+npm_unpublish_force: ### [nunpf] Unpublish entire package (WARNING: irreversible)
+	$(docker-compose) exec $(main-container-name) npm unpublish $(shell npm pkg get name | tr -d '"') --force
+
+npm_deprecate: ### [ndep] Deprecate package version (usage: make npm_deprecate VERSION=1.0.0 MSG="Use version 2.0.0")
+	$(docker-compose) exec $(main-container-name) npm deprecate $(shell npm pkg get name | tr -d '"')@$(VERSION) "$(MSG)"
+
+# Registry Information
+npm_info: ### [ninfo] Show package information from registry
+	$(docker-compose) exec $(main-container-name) npm info $(shell npm pkg get name | tr -d '"')
+
+npm_info_version: ### [ninfov] Show package version from registry
+	$(docker-compose) exec $(main-container-name) npm info $(shell npm pkg get name | tr -d '"') version
+
+npm_info_versions: ### [ninfovs] Show all published versions
+	$(docker-compose) exec $(main-container-name) npm info $(shell npm pkg get name | tr -d '"') versions
+
+npm_view_dist_tags: ### [nvdt] Show distribution tags (latest, next, beta, etc.)
+	$(docker-compose) exec $(main-container-name) npm view $(shell npm pkg get name | tr -d '"') dist-tags
+
+# Authentication
+npm_whoami: ### [nwho] Show currently logged in npm user
+	$(docker-compose) exec $(main-container-name) npm whoami
+
+npm_login: ### [nlogin] Login to npm registry (interactive)
+	$(docker-compose) exec -it $(main-container-name) npm login
+
+npm_logout: ### [nlogout] Logout from npm registry
+	$(docker-compose) exec $(main-container-name) npm logout
+
+# Distribution Tags
+npm_dist_tag_add: ### [ndta] Add distribution tag (usage: make npm_dist_tag_add VERSION=1.0.0 TAG=stable)
+	$(docker-compose) exec $(main-container-name) npm dist-tag add $(shell npm pkg get name | tr -d '"')@$(VERSION) $(TAG)
+
+npm_dist_tag_rm: ### [ndtr] Remove distribution tag (usage: make npm_dist_tag_rm TAG=beta)
+	$(docker-compose) exec $(main-container-name) npm dist-tag rm $(shell npm pkg get name | tr -d '"') $(TAG)
+
+npm_dist_tag_ls: ### [ndtl] List all distribution tags
+	$(docker-compose) exec $(main-container-name) npm dist-tag ls $(shell npm pkg get name | tr -d '"')
+
+# Package Verification
+npm_pack: ### [npack] Create tarball package (for testing before publish)
+	$(docker-compose) exec $(main-container-name) npm pack
+
+npm_pack_dry: ### [npackd] Show what files would be included in package
+	$(docker-compose) exec $(main-container-name) npm pack --dry-run
+
+# Registry Configuration
+npm_registry_get: ### [nregg] Show current registry URL
+	$(docker-compose) exec $(main-container-name) npm config get registry
+
+npm_registry_set_default: ### [nregd] Set registry to default npm (npmjs.org)
+	$(docker-compose) exec $(main-container-name) npm config set registry https://registry.npmjs.org/
+
+npm_registry_set: ### [nregs] Set custom registry URL (usage: make npm_registry_set URL=https://registry.example.com)
+	$(docker-compose) exec $(main-container-name) npm config set registry $(URL)
+
+# Common Workflows
+npm_bump_patch_publish: ### [nbpp] Bump patch version and publish
+	$(docker-compose) exec $(main-container-name) sh -c "npm version patch && npm publish"
+
+npm_bump_minor_publish: ### [nbmp] Bump minor version and publish
+	$(docker-compose) exec $(main-container-name) sh -c "npm version minor && npm publish"
+
+npm_bump_major_publish: ### [nbmjp] Bump major version and publish
+	$(docker-compose) exec $(main-container-name) sh -c "npm version major && npm publish"
+
+npm_bump_patch_publish_public: ### [nbppp] Bump patch version and publish as public
+	$(docker-compose) exec $(main-container-name) sh -c "npm version patch && npm publish --access public"
+
+# Aliases
+nvc: npm_version_check
+nvp: npm_version_patch
+nvm: npm_version_minor
+nvmj: npm_version_major
+nvpr: npm_version_prerelease
+nvpp: npm_version_prepatch
+nvpm: npm_version_preminor
+nvpmj: npm_version_premajor
+npub: npm_publish
+npubd: npm_publish_dry
+npubp: npm_publish_public
+npubt: npm_publish_tag
+npubn: npm_publish_next
+npubb: npm_publish_beta
+npuba: npm_publish_alpha
+nunp: npm_unpublish
+nunpf: npm_unpublish_force
+ndep: npm_deprecate
+ninfo: npm_info
+ninfov: npm_info_version
+ninfovs: npm_info_versions
+nvdt: npm_view_dist_tags
+nwho: npm_whoami
+nlogin: npm_login
+nlogout: npm_logout
+ndta: npm_dist_tag_add
+ndtr: npm_dist_tag_rm
+ndtl: npm_dist_tag_ls
+npack: npm_pack
+npackd: npm_pack_dry
+nregg: npm_registry_get
+nregd: npm_registry_set_default
+nregs: npm_registry_set
+nbpp: npm_bump_patch_publish
+nbmp: npm_bump_minor_publish
+nbmjp: npm_bump_major_publish
+nbppp: npm_bump_patch_publish_public

@@ -1,0 +1,211 @@
+# NPM Dependencies Management v1
+# Commands for managing package dependencies and updates
+# Usage: include this file in your main Makefile
+# Required variables: docker-compose, main-container-name
+
+.PHONY: npm_install npm_install_clean npm_ci npm_update npm_outdated
+.PHONY: npm_audit npm_audit_fix npm_dedupe npm_prune npm_ls
+
+# Installation
+npm_install: ### [nins] Install all dependencies from package.json
+	$(docker-compose) exec $(main-container-name) npm install
+
+npm_install_clean: ### [ninsc] Clean install (removes node_modules and package-lock.json first)
+	$(docker-compose) exec $(main-container-name) sh -c "rm -rf node_modules package-lock.json && npm install"
+
+npm_ci: ### [nci] Clean install for CI environments (uses package-lock.json)
+	$(docker-compose) exec $(main-container-name) npm ci
+
+npm_install_prod: ### [ninsp] Install only production dependencies
+	$(docker-compose) exec $(main-container-name) npm install --production
+
+npm_install_dev: ### [ninsd] Install only development dependencies
+	$(docker-compose) exec $(main-container-name) npm install --only=dev
+
+# Adding Dependencies
+npm_add: ### [nadd] Add production dependency (usage: make npm_add PKG=lodash)
+	$(docker-compose) exec $(main-container-name) npm install $(PKG)
+
+npm_add_dev: ### [naddd] Add development dependency (usage: make npm_add_dev PKG=jest)
+	$(docker-compose) exec $(main-container-name) npm install --save-dev $(PKG)
+
+npm_add_exact: ### [nadde] Add dependency with exact version (usage: make npm_add_exact PKG=react@18.2.0)
+	$(docker-compose) exec $(main-container-name) npm install --save-exact $(PKG)
+
+npm_add_global: ### [naddg] Install package globally (usage: make npm_add_global PKG=typescript)
+	$(docker-compose) exec $(main-container-name) npm install -g $(PKG)
+
+# Removing Dependencies
+npm_remove: ### [nrm] Remove dependency (usage: make npm_remove PKG=lodash)
+	$(docker-compose) exec $(main-container-name) npm uninstall $(PKG)
+
+npm_remove_global: ### [nrmg] Remove global package (usage: make npm_remove_global PKG=typescript)
+	$(docker-compose) exec $(main-container-name) npm uninstall -g $(PKG)
+
+# Updating Dependencies
+npm_update: ### [nupd] Update all dependencies to latest allowed versions
+	$(docker-compose) exec $(main-container-name) npm update
+
+npm_update_pkg: ### [nup] Update specific package (usage: make npm_update_pkg PKG=lodash)
+	$(docker-compose) exec $(main-container-name) npm update $(PKG)
+
+npm_update_major: ### [num] Update all packages to latest major versions (requires npm-check-updates)
+	$(docker-compose) exec $(main-container-name) npx npm-check-updates -u
+	$(docker-compose) exec $(main-container-name) npm install
+
+npm_update_interactive: ### [nui] Interactive package update (requires npm-check-updates)
+	$(docker-compose) exec -it $(main-container-name) npx npm-check-updates -i
+
+# Dependency Information
+npm_outdated: ### [no] Show outdated dependencies
+	$(docker-compose) exec $(main-container-name) npm outdated
+
+npm_ls: ### [nls] List installed packages (tree view)
+	$(docker-compose) exec $(main-container-name) npm ls
+
+npm_ls_depth: ### [nlsd] List packages with limited depth (usage: make npm_ls_depth DEPTH=1)
+	$(docker-compose) exec $(main-container-name) npm ls --depth=$(DEPTH)
+
+npm_ls_prod: ### [nlsp] List production dependencies only
+	$(docker-compose) exec $(main-container-name) npm ls --production
+
+npm_ls_dev: ### [nlsdev] List development dependencies only
+	$(docker-compose) exec $(main-container-name) npm ls --dev
+
+npm_ls_global: ### [nlsg] List globally installed packages
+	$(docker-compose) exec $(main-container-name) npm ls -g --depth=0
+
+npm_why: ### [nwhy] Show why a package is installed (usage: make npm_why PKG=lodash)
+	$(docker-compose) exec $(main-container-name) npm ls $(PKG)
+
+# Package Information
+npm_view: ### [nv] View package information (usage: make npm_view PKG=react)
+	$(docker-compose) exec $(main-container-name) npm view $(PKG)
+
+npm_view_versions: ### [nvv] View all available versions (usage: make npm_view_versions PKG=react)
+	$(docker-compose) exec $(main-container-name) npm view $(PKG) versions
+
+npm_search: ### [ns] Search npm registry (usage: make npm_search QUERY=lodash)
+	$(docker-compose) exec $(main-container-name) npm search $(QUERY)
+
+# Security
+npm_audit: ### [naud] Run security audit on dependencies
+	$(docker-compose) exec $(main-container-name) npm audit
+
+npm_audit_json: ### [naudj] Run security audit with JSON output
+	$(docker-compose) exec $(main-container-name) npm audit --json
+
+npm_audit_fix: ### [naudf] Automatically fix security vulnerabilities
+	$(docker-compose) exec $(main-container-name) npm audit fix
+
+npm_audit_fix_force: ### [naudff] Force fix vulnerabilities (may introduce breaking changes)
+	$(docker-compose) exec $(main-container-name) npm audit fix --force
+
+# Optimization
+npm_dedupe: ### [ndd] Deduplicate dependencies to reduce package size
+	$(docker-compose) exec $(main-container-name) npm dedupe
+
+npm_prune: ### [npr] Remove extraneous packages not in package.json
+	$(docker-compose) exec $(main-container-name) npm prune
+
+npm_prune_prod: ### [nprp] Remove development dependencies
+	$(docker-compose) exec $(main-container-name) npm prune --production
+
+# Cache Management
+npm_cache_verify: ### [ncv] Verify npm cache integrity
+	$(docker-compose) exec $(main-container-name) npm cache verify
+
+npm_cache_clean: ### [ncc] Clean npm cache
+	$(docker-compose) exec $(main-container-name) npm cache clean --force
+
+npm_cache_ls: ### [ncl] List cached packages
+	$(docker-compose) exec $(main-container-name) npm cache ls
+
+# Lock File Management
+npm_lock_verify: ### [nlv] Verify package-lock.json is in sync with package.json
+	$(docker-compose) exec $(main-container-name) npm install --package-lock-only
+
+npm_lock_update: ### [nlu] Update package-lock.json without installing
+	$(docker-compose) exec $(main-container-name) npm install --package-lock-only
+
+# Package Scripts
+npm_run: ### [nrun] Run npm script (usage: make npm_run SCRIPT=build)
+	$(docker-compose) exec $(main-container-name) npm run $(SCRIPT)
+
+npm_run_list: ### [nrunl] List all available npm scripts
+	$(docker-compose) exec $(main-container-name) npm run
+
+# Link for Local Development
+npm_link: ### [nlink] Create global link to current package
+	$(docker-compose) exec $(main-container-name) npm link
+
+npm_link_pkg: ### [nlinkp] Link to another local package (usage: make npm_link_pkg PKG=my-package)
+	$(docker-compose) exec $(main-container-name) npm link $(PKG)
+
+npm_unlink: ### [nunlink] Remove global link
+	$(docker-compose) exec $(main-container-name) npm unlink
+
+npm_unlink_pkg: ### [nunlinkp] Unlink specific package (usage: make npm_unlink_pkg PKG=my-package)
+	$(docker-compose) exec $(main-container-name) npm unlink $(PKG)
+
+# Common Workflows
+npm_fresh_install: ### [nfi] Complete fresh install (clean + install)
+	$(docker-compose) exec $(main-container-name) sh -c "rm -rf node_modules package-lock.json && npm install"
+
+npm_rebuild: ### [nrb] Rebuild native dependencies
+	$(docker-compose) exec $(main-container-name) npm rebuild
+
+npm_check_updates: ### [ncu] Check for available updates with npm-check-updates
+	$(docker-compose) exec $(main-container-name) npx npm-check-updates
+
+npm_security_check: ### [nsc] Run audit and show outdated packages
+	$(docker-compose) exec $(main-container-name) sh -c "npm audit && npm outdated"
+
+# Aliases
+nins: npm_install
+ninsc: npm_install_clean
+nci: npm_ci
+ninsp: npm_install_prod
+ninsd: npm_install_dev
+nadd: npm_add
+naddd: npm_add_dev
+nadde: npm_add_exact
+naddg: npm_add_global
+nrm: npm_remove
+nrmg: npm_remove_global
+nupd: npm_update
+nup: npm_update_pkg
+num: npm_update_major
+nui: npm_update_interactive
+no: npm_outdated
+nls: npm_ls
+nlsd: npm_ls_depth
+nlsp: npm_ls_prod
+nlsdev: npm_ls_dev
+nlsg: npm_ls_global
+nwhy: npm_why
+nv: npm_view
+nvv: npm_view_versions
+ns: npm_search
+naud: npm_audit
+naudj: npm_audit_json
+naudf: npm_audit_fix
+naudff: npm_audit_fix_force
+ndd: npm_dedupe
+npr: npm_prune
+nprp: npm_prune_prod
+ncv: npm_cache_verify
+ncc: npm_cache_clean
+ncl: npm_cache_ls
+nlv: npm_lock_verify
+nlu: npm_lock_update
+nrun: npm_run
+nrunl: npm_run_list
+nlink: npm_link
+nlinkp: npm_link_pkg
+nunlink: npm_unlink
+nunlinkp: npm_unlink_pkg
+nfi: npm_fresh_install
+nrb: npm_rebuild
+ncu: npm_check_updates
+nsc: npm_security_check
